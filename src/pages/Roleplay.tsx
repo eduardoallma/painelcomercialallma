@@ -282,6 +282,7 @@ export default function Roleplay() {
           if (jsonStr === "[DONE]") continue;
           try {
             const parsed = JSON.parse(jsonStr);
+            if (parsed.meta) continue;
             const c = parsed.choices?.[0]?.delta?.content;
             if (c) upsert(c);
           } catch {}
