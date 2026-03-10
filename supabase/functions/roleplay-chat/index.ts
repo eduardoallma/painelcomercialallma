@@ -341,7 +341,7 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = buildSystemPrompt(role_type, methodology, playbookContext);
+    const systemPrompt = buildSystemPrompt(role_type, methodology, playbookContext, messages);
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured");
