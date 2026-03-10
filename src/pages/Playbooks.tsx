@@ -12,6 +12,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
 import { Upload, Trash2, FileText, Loader2 } from "lucide-react";
 
@@ -32,6 +42,7 @@ export default function Playbooks() {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Playbook | null>(null);
 
   const fetchPlaybooks = async () => {
     if (!user) return;
@@ -91,7 +102,6 @@ export default function Playbooks() {
             });
             return;
           }
-
           fetchPlaybooks();
           toast({
             title: "Texto extraído",
@@ -114,7 +124,10 @@ export default function Playbooks() {
     }
   };
 
-  const handleDelete = async (pb: Playbook) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    const pb = deleteTarget;
+    setDeleteTarget(null);
     try {
       await supabase.storage.from("playbooks").remove([pb.file_path]);
       await supabase.from("playbooks").delete().eq("id", pb.id);
@@ -163,7 +176,7 @@ export default function Playbooks() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleDelete(pb)}
+                  onClick={() => setDeleteTarget(pb)}
                   className="text-muted-foreground hover:text-destructive flex-shrink-0"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -199,6 +212,21 @@ export default function Playbooks() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir playbook</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir "{deleteTarget?.title}"? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

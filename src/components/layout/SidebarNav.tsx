@@ -5,6 +5,7 @@ const links = [
   { to: "/dashboard", label: "Painel" },
   { to: "/calculator", label: "Calculadora" },
   { to: "/roleplay", label: "Roleplay" },
+  { to: "/roleplay/history", label: "Histórico" },
   { to: "/playbooks", label: "Playbooks" },
 ];
 

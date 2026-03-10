@@ -25,6 +25,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/roleplay" element={<Roleplay />} />
+          <Route path="/roleplay/history" element={<RoleplayHistory />} />
           <Route path="/playbooks" element={<Playbooks />} />
         </Route>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
