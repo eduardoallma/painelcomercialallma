@@ -5,6 +5,7 @@ import AppShell from "@/components/layout/AppShell";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import Placeholder from "@/pages/Placeholder";
+import Roleplay from "@/pages/Roleplay";
 import NotFound from "@/pages/NotFound";
 
 const App = () => (
@@ -21,7 +22,7 @@ const App = () => (
         >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/calculator" element={<Placeholder page="calculator" />} />
-          <Route path="/roleplay" element={<Placeholder page="roleplay" />} />
+          <Route path="/roleplay" element={<Roleplay />} />
           <Route path="/playbooks" element={<Placeholder page="playbooks" />} />
         </Route>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
