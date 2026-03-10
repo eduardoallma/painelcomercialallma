@@ -59,6 +59,10 @@ export default function Roleplay() {
   const [prospectInfo, setProspectInfo] = useState<ProspectInfo | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // History
+  const [historySessions, setHistorySessions] = useState<HistorySession[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+
   // Role/methodology selection
   const [roleType, setRoleType] = useState<RoleType | null>(null);
   const [methodology, setMethodology] = useState<Methodology | null>(null);
