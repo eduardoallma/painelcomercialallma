@@ -85,10 +85,19 @@ export default function Roleplay() {
     setSelectionStep("ready");
   };
 
+  const buildTitle = (score?: number | null) => {
+    const methodLabel = methodology?.toUpperCase() || "BANT";
+    const scoreStr = score != null ? `${score}/10` : "—";
+    if (prospectInfo) {
+      return `${prospectInfo.name} (${prospectInfo.company}) · ${methodLabel} · ${scoreStr}`;
+    }
+    return `Sessão · ${methodLabel} · ${scoreStr}`;
+  };
+
   const saveSession = async (msgs: Msg[]) => {
     if (!user || msgs.length < 2) return null;
 
-    const title = msgs[0]?.content.slice(0, 60) || "Sessão sem título";
+    const title = buildTitle();
 
     if (sessionId) {
       await supabase
