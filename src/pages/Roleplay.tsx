@@ -160,6 +160,18 @@ export default function Roleplay() {
 
       const result: EvalResult = await resp.json();
       setEvalResult(result);
+
+      // Update title with score
+      const methodLabel = methodology?.toUpperCase() || "BANT";
+      const scoreStr = `${result.score}/10`;
+      const updatedTitle = prospectInfo
+        ? `${prospectInfo.name} (${prospectInfo.company}) · ${methodLabel} · ${scoreStr}`
+        : `Sessão · ${methodLabel} · ${scoreStr}`;
+      await supabase
+        .from("roleplay_sessions")
+        .update({ title: updatedTitle })
+        .eq("id", sid);
+
       toast({ title: `Avaliação concluída: ${result.score}/10` });
     } catch (e: any) {
       console.error(e);
