@@ -68,6 +68,19 @@ export default function Roleplay() {
   const [methodology, setMethodology] = useState<Methodology | null>(null);
   const [selectionStep, setSelectionStep] = useState<"role" | "methodology" | "ready">("role");
 
+  const loadHistory = useCallback(() => {
+    if (!user) return;
+    supabase
+      .from("roleplay_sessions")
+      .select("id, title, messages, score, bant_feedback, methodology, created_at")
+      .eq("owner_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setHistorySessions((data as unknown as HistorySession[]) ?? []);
+        setHistoryLoading(false);
+      });
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
     supabase
@@ -76,7 +89,8 @@ export default function Roleplay() {
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => setPlaybooks(data ?? []));
-  }, [user]);
+    loadHistory();
+  }, [user, loadHistory]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
