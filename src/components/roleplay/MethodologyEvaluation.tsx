@@ -51,9 +51,11 @@ function scoreColor(score: number): string {
 export default function MethodologyEvaluation({
   result,
   methodology = "bant",
+  onClose,
 }: {
   result: EvaluationResult;
   methodology?: Methodology;
+  onClose?: () => void;
 }) {
   const { score, evaluation } = result;
   const pillars = methodologyPillars[methodology] || methodologyPillars.bant;
