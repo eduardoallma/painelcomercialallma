@@ -262,6 +262,10 @@ export default function Roleplay() {
           if (jsonStr === "[DONE]") break;
           try {
             const parsed = JSON.parse(jsonStr);
+            if (parsed.meta) {
+              setProspectInfo({ name: parsed.meta.prospect_name, company: parsed.meta.prospect_company });
+              continue;
+            }
             const c = parsed.choices?.[0]?.delta?.content;
             if (c) upsert(c);
           } catch {
