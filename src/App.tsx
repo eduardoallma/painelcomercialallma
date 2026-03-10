@@ -21,7 +21,7 @@ const App = () => (
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/calculator" element={<Placeholder page="calculator" />} />
+          <Route path="/calculator" element={<Calculator />} />
           <Route path="/roleplay" element={<Placeholder page="roleplay" />} />
           <Route path="/playbooks" element={<Placeholder page="playbooks" />} />
         </Route>
