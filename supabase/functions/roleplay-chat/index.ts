@@ -271,9 +271,12 @@ const CLIENT_PROFILES = [
 ];
 
 function getRandomProfile(messages: any[]): typeof CLIENT_PROFILES[0] {
-  const idx = messages.length <= 1
-    ? Math.floor(Math.random() * CLIENT_PROFILES.length)
-    : Math.abs(JSON.stringify(messages[0]).length) % CLIENT_PROFILES.length;
+  const firstUserMsg = messages.find((m: any) => m.role === "user")?.content || "";
+  let hash = 0;
+  for (let i = 0; i < firstUserMsg.length; i++) {
+    hash = ((hash << 5) - hash + firstUserMsg.charCodeAt(i)) | 0;
+  }
+  const idx = Math.abs(hash) % CLIENT_PROFILES.length;
   return CLIENT_PROFILES[idx];
 }
 
