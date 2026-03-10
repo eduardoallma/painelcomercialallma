@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 interface PillarResult {
   score: number;
@@ -50,9 +51,11 @@ function scoreColor(score: number): string {
 export default function MethodologyEvaluation({
   result,
   methodology = "bant",
+  onClose,
 }: {
   result: EvaluationResult;
   methodology?: Methodology;
+  onClose?: () => void;
 }) {
   const { score, evaluation } = result;
   const pillars = methodologyPillars[methodology] || methodologyPillars.bant;
@@ -65,6 +68,11 @@ export default function MethodologyEvaluation({
         <div className="flex items-center gap-2">
           <span className={`text-2xl font-bold ${scoreColor(score)}`}>{score}</span>
           <span className="text-sm text-muted-foreground">/10</span>
+          {onClose && (
+            <button onClick={onClose} className="ml-2 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 

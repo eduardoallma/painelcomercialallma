@@ -6,9 +6,9 @@ import Topbar from "@/components/layout/Topbar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ChevronLeft, MessageSquare } from "lucide-react";
+import { Loader2, ChevronLeft, MessageSquare, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import BANTEvaluation from "@/components/roleplay/BANTEvaluation";
+import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
 
 interface Session {
   id: string;
@@ -16,21 +16,23 @@ interface Session {
   messages: Array<{ role: string; content: string }>;
   score: number | null;
   bant_feedback: string | null;
+  methodology: string | null;
   created_at: string;
 }
 
 export default function RoleplayHistory() {
   const { onMenuClick } = useOutletContext<{ onMenuClick: () => void }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Session | null>(null);
+  const [showEvaluation, setShowEvaluation] = useState(true);
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("roleplay_sessions")
-      .select("id, title, messages, score, bant_feedback, created_at")
+      .select("id, title, messages, score, bant_feedback, methodology, created_at")
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
@@ -39,7 +41,12 @@ export default function RoleplayHistory() {
       });
   }, [user]);
 
-  const bantResult = selected?.bant_feedback
+  const handleSelect = (s: Session) => {
+    setSelected(s);
+    setShowEvaluation(true);
+  };
+
+  const evalResult = selected?.bant_feedback
     ? (() => {
         try {
           const evaluation = JSON.parse(selected.bant_feedback);
@@ -49,6 +56,8 @@ export default function RoleplayHistory() {
         }
       })()
     : null;
+
+  const displayName = profile?.name || user?.email || "";
 
   if (selected) {
     return (
@@ -60,7 +69,13 @@ export default function RoleplayHistory() {
             Voltar
           </Button>
 
-          {bantResult && <BANTEvaluation result={bantResult} />}
+          {showEvaluation && evalResult && (
+            <MethodologyEvaluation
+              result={evalResult}
+              methodology={(selected.methodology as "bant" | "spin" | "gpct") || "bant"}
+              onClose={() => setShowEvaluation(false)}
+            />
+          )}
 
           <ScrollArea className="flex-1">
             <div className="space-y-4 pb-4">
@@ -94,6 +109,13 @@ export default function RoleplayHistory() {
     <>
       <Topbar title="Histórico" description="Sessões de roleplay anteriores" onMenuClick={onMenuClick} />
       <div className="px-6 lg:px-8 py-6 space-y-4">
+        {displayName && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="h-4 w-4" />
+            <span>Logado como <span className="font-medium text-foreground">{displayName}</span></span>
+          </div>
+        )}
+
         {loading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -109,7 +131,7 @@ export default function RoleplayHistory() {
               <Card
                 key={s.id}
                 className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-accent/50 transition-colors"
-                onClick={() => setSelected(s)}
+                onClick={() => handleSelect(s)}
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
