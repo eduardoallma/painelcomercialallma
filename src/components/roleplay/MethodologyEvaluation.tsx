@@ -68,6 +68,11 @@ export default function MethodologyEvaluation({
         <div className="flex items-center gap-2">
           <span className={`text-2xl font-bold ${scoreColor(score)}`}>{score}</span>
           <span className="text-sm text-muted-foreground">/10</span>
+          {onClose && (
+            <button onClick={onClose} className="ml-2 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
