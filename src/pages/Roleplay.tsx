@@ -44,6 +44,7 @@ export default function Roleplay() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState<EvalResult | null>(null);
+  const [prospectInfo, setProspectInfo] = useState<{ name: string; company: string } | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Role/methodology selection
