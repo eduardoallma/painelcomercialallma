@@ -203,6 +203,7 @@ export default function Roleplay() {
         .eq("id", sid);
 
       toast({ title: `Avaliação concluída: ${result.score}/10` });
+      loadHistory();
     } catch (e: any) {
       console.error(e);
       toast({ title: "Erro na avaliação", description: e.message, variant: "destructive" });
