@@ -1,1 +1,7 @@
 project_id = "ktgxwdjwhulcojtusmyi"
+
+[functions.roleplay-chat]
+verify_jwt = false
+
+[functions.extract-playbook]
+verify_jwt = false
