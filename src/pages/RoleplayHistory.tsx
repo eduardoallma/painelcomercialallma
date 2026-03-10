@@ -139,6 +139,7 @@ export default function RoleplayHistory() {
                     {new Date(s.created_at).toLocaleDateString("pt-BR")}
                     {" · "}
                     {(s.messages?.length ?? 0)} mensagens
+                    {displayName && <> · {displayName}</>}
                   </p>
                 </div>
                 {s.score !== null && (
