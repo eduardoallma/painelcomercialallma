@@ -7,6 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import Calculator from "@/pages/Calculator";
 import Playbooks from "@/pages/Playbooks";
 import Roleplay from "@/pages/Roleplay";
+import RoleplayHistory from "@/pages/RoleplayHistory";
 import NotFound from "@/pages/NotFound";
 
 const App = () => (
