@@ -8,36 +8,44 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Missing authorization header");
 
-    const supabase = createClient(
+    const authClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const {
+      data: { user },
+      error: userError,
+    } = await authClient.auth.getUser();
+
     if (userError || !user) throw new Error("Unauthorized");
 
     const { playbook_id } = await req.json();
     if (!playbook_id) throw new Error("playbook_id is required");
 
-    // Get playbook record
-    const { data: playbook, error: pbError } = await supabase
+    const { data: playbook, error: pbError } = await adminClient
       .from("playbooks")
       .select("id, file_path, owner_id")
       .eq("id", playbook_id)
-      .single();
+      .maybeSingle();
 
-    if (pbError || !playbook) throw new Error("Playbook not found");
+    if (pbError) throw pbError;
+    if (!playbook) throw new Error("Playbook not found");
     if (playbook.owner_id !== user.id) throw new Error("Unauthorized");
 
-    // Download file from storage
-    const { data: fileData, error: dlError } = await supabase.storage
+    const { data: fileData, error: dlError } = await adminClient.storage
       .from("playbooks")
       .download(playbook.file_path);
 
@@ -49,19 +57,15 @@ serve(async (req) => {
     if (fileName.endsWith(".txt") || fileName.endsWith(".md")) {
       extractedText = await fileData.text();
     } else if (fileName.endsWith(".pdf")) {
-      // For PDF, extract raw text content (basic approach)
       const bytes = new Uint8Array(await fileData.arrayBuffer());
       extractedText = extractTextFromPdfBytes(bytes);
     } else if (fileName.endsWith(".docx")) {
-      // For DOCX, extract text from XML content
       extractedText = await extractTextFromDocx(fileData);
     } else {
-      // Fallback: try to read as text
       extractedText = await fileData.text();
     }
 
-    // Update playbook with extracted text
-    const { error: updateError } = await supabase
+    const { error: updateError } = await adminClient
       .from("playbooks")
       .update({ extracted_text: extractedText })
       .eq("id", playbook_id);
