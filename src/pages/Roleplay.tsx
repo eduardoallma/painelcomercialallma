@@ -471,40 +471,61 @@ export default function Roleplay() {
           </div>
         </div>
 
-        {/* Lead Info Card */}
+        {/* Lead Info HoverCard */}
         {prospectInfo && (
-          <Card className="p-4 border-border/50">
-            <div className="flex items-start gap-3">
-              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <User className="h-4 w-4 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-foreground">{prospectInfo.name}</h3>
-                  <span className="text-xs text-muted-foreground">·</span>
-                  <span className="text-xs text-muted-foreground">{prospectInfo.role}</span>
-                </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-1.5 text-xs">
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Building2 className="h-3 w-3 flex-shrink-0" />
-                    <span className="truncate">{prospectInfo.company} · {prospectInfo.segment}</span>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <button className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-yellow-500/50 text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors cursor-pointer">
+                <User className="h-3 w-3" />
+                {prospectInfo.name} · {prospectInfo.company}
+              </button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80 border-yellow-500/50 bg-card">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                    <User className="h-4 w-4 text-yellow-500" />
                   </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <TrendingUp className="h-3 w-3 flex-shrink-0" />
-                    <span className="truncate">Investimento: {prospectInfo.trafficInvestment}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Target className="h-3 w-3 flex-shrink-0" />
-                    <span className="truncate">Resultado: {prospectInfo.trafficResult}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <AlertCircle className="h-3 w-3 flex-shrink-0" />
-                    <span className="truncate">Desafio: {prospectInfo.mainChallenge}</span>
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground">{prospectInfo.name}</h4>
+                    <p className="text-xs text-yellow-500">{prospectInfo.role}</p>
                   </div>
                 </div>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <Building2 className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                    <span className="text-muted-foreground">{prospectInfo.company} · {prospectInfo.segment}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <TrendingUp className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                    <span className="text-muted-foreground">Investimento: {prospectInfo.trafficInvestment}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Target className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                    <span className="text-muted-foreground">Resultado: {prospectInfo.trafficResult}</span>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <AlertCircle className="h-3 w-3 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-muted-foreground">
+                      {prospectInfo.mainChallenge === "Todas as opções acima" ? (
+                        <div className="space-y-1">
+                          <span className="font-medium text-yellow-500">Desafios:</span>
+                          <ul className="list-disc list-inside space-y-0.5 pl-1">
+                            <li>Dependência de indicações para fechar novas vendas</li>
+                            <li>Falta de previsibilidade</li>
+                            <li>Receio de investir mais em Tráfego, sem segurança de resultados</li>
+                            <li>Dificuldade em contratar e reter um Time de Marketing qualificado</li>
+                          </ul>
+                        </div>
+                      ) : (
+                        <span>Desafio: {prospectInfo.mainChallenge}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </Card>
+            </HoverCardContent>
+          </HoverCard>
         )}
 
         {/* Evaluation Result */}
