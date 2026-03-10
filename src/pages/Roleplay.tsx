@@ -606,6 +606,16 @@ export default function Roleplay() {
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </div>
+
+        {/* History */}
+        <div className="border-t border-border pt-4 mt-2">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Histórico de sessões</h3>
+          <SessionHistory
+            sessions={historySessions}
+            loading={historyLoading}
+            onDeleted={(id) => setHistorySessions((prev) => prev.filter((s) => s.id !== id))}
+          />
+        </div>
       </div>
     </>
   );
