@@ -2,8 +2,8 @@ import { useOutletContext } from "react-router-dom";
 import Topbar from "@/components/layout/Topbar";
 
 const pages: Record<string, { title: string; description: string }> = {
-  calculator: { title: "Calculator", description: "Calculadora comercial" },
-  roleplay: { title: "Roleplay", description: "Simulação de vendas" },
+  calculator: { title: "Calculadora", description: "Calculadora comercial" },
+  roleplay: { title: "Simulação", description: "Simulação de vendas" },
   playbooks: { title: "Playbooks", description: "Guias e processos" },
 };
 
