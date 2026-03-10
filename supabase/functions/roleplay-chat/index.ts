@@ -7,6 +7,52 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string): string {
+  const base = `Você é um assistente de treinamento comercial da Allma. Responda sempre em português brasileiro. Seja desafiador mas justo nas simulações.\n\n`;
+
+  const methodologyPrompts: Record<string, string> = {
+    bant: `Você está simulando um PROSPECT em fase de QUALIFICAÇÃO. O vendedor é um SDR (pré-vendas) que deve qualificá-lo usando a metodologia BANT.
+
+INSTRUÇÕES PARA O PROSPECT:
+1. Você é um potencial cliente que ainda não foi qualificado
+2. Tenha um orçamento definido (mas não revele facilmente)
+3. Pode ou não ser o tomador de decisão — faça o vendedor descobrir
+4. Tenha dores e necessidades reais, mas exija que o vendedor as descubra com boas perguntas
+5. Tenha uma timeline em mente (urgente ou não)
+6. Faça objeções naturais: "preciso falar com meu chefe", "não temos budget agora", etc.
+7. Reaja positivamente quando o vendedor fizer boas perguntas de qualificação`,
+
+    spin: `Você está simulando um CLIENTE já qualificado em uma reunião de vendas. O vendedor é um Closer que deve usar a metodologia SPIN Selling.
+
+INSTRUÇÕES PARA O CLIENTE:
+1. Você já passou pela qualificação e tem interesse no produto/serviço
+2. Tenha uma SITUAÇÃO atual bem definida (processos, ferramentas, equipe)
+3. Tenha PROBLEMAS reais que enfrenta no dia a dia
+4. Quando o vendedor explorar IMPLICAÇÕES, revele impactos maiores (perda de receita, ineficiência, turnover)
+5. Esteja aberto a reconhecer o valor (NEED-PAYOFF) quando bem conduzido
+6. Resista a propostas genéricas — exija que o vendedor entenda seu contexto antes de propor soluções
+7. Faça objeções de valor: "como isso é diferente do que já temos?"`,
+
+    gpct: `Você está simulando um CLIENTE já qualificado em uma reunião de vendas. O vendedor é um Closer que deve usar a metodologia GPCT.
+
+INSTRUÇÕES PARA O CLIENTE:
+1. Você já passou pela qualificação e tem interesse no produto/serviço
+2. Tenha GOALS (metas) claros para o trimestre/ano (crescer X%, reduzir churn, etc.)
+3. Tenha PLANS (planos) em andamento para alcançar essas metas
+4. Enfrente CHALLENGES (desafios) reais que dificultam a execução dos planos
+5. Tenha uma TIMELINE definida (deadline de projeto, fim do trimestre, renovação de contrato)
+6. Faça objeções estratégicas: "já temos um plano para isso", "nosso timeline é apertado"
+7. Valorize quando o vendedor conectar a solução aos seus goals específicos`,
+  };
+
+  const methodPrompt = methodologyPrompts[methodology] || methodologyPrompts.bant;
+  const pbSection = playbookContext
+    ? `\nPLAYBOOKS DE REFERÊNCIA:\n\n${playbookContext}`
+    : "\nNenhum playbook selecionado. Use um cenário genérico.";
+
+  return base + methodPrompt + pbSection;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -25,7 +71,7 @@ serve(async (req) => {
     if (userError || !user) throw new Error("Unauthorized");
 
     const userId = user.id;
-    const { messages, playbook_ids } = await req.json();
+    const { messages, playbook_ids, role_type = "sdr", methodology = "bant" } = await req.json();
     if (!messages || !Array.isArray(messages)) throw new Error("messages[] is required");
 
     // Fetch playbook content
@@ -44,22 +90,11 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = `Você é um assistente de treinamento comercial da Allma. Seu papel é fazer roleplay de vendas com o usuário.
-
-INSTRUÇÕES:
-1. Simule ser um cliente/prospect realista baseado nos playbooks fornecidos
-2. Faça objeções naturais que um cliente real faria
-3. Após o roleplay, avalie o desempenho do vendedor com feedback construtivo
-4. Use o conteúdo dos playbooks como base para cenários e avaliações
-5. Responda sempre em português brasileiro
-6. Seja desafiador mas justo nas simulações
-
-${playbookContext ? `PLAYBOOKS DE REFERÊNCIA:\n\n${playbookContext}` : "Nenhum playbook selecionado. Faça roleplay genérico de vendas."}`;
+    const systemPrompt = buildSystemPrompt(role_type, methodology, playbookContext);
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured");
 
-    // Convert messages to Anthropic format (separate system from user/assistant)
     const anthropicMessages = messages.map((m: { role: string; content: string }) => ({
       role: m.role === "user" ? "user" : "assistant",
       content: m.content,
@@ -94,7 +129,6 @@ ${playbookContext ? `PLAYBOOKS DE REFERÊNCIA:\n\n${playbookContext}` : "Nenhum 
       });
     }
 
-    // Transform Anthropic SSE stream to OpenAI-compatible format for the frontend
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
@@ -122,7 +156,6 @@ ${playbookContext ? `PLAYBOOKS DE REFERÊNCIA:\n\n${playbookContext}` : "Nenhum 
             try {
               const event = JSON.parse(jsonStr);
               if (event.type === "content_block_delta" && event.delta?.text) {
-                // Convert to OpenAI-compatible SSE format
                 const openaiChunk = {
                   choices: [{ delta: { content: event.delta.text } }],
                 };

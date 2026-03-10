@@ -6,10 +6,13 @@ import Topbar from "@/components/layout/Topbar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Send, Trash2, Loader2, BookOpen, Save, Star, Plus } from "lucide-react";
+import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import BANTEvaluation from "@/components/roleplay/BANTEvaluation";
+import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
 
 interface Msg {
   role: "user" | "assistant";
@@ -21,16 +24,13 @@ interface PlaybookOption {
   title: string;
 }
 
-interface BANTResult {
+type RoleType = "sdr" | "closer";
+type Methodology = "bant" | "spin" | "gpct";
+
+interface EvalResult {
   score: number;
-  evaluation: {
-    summary: string;
-    budget: { score: number; feedback: string };
-    authority: { score: number; feedback: string };
-    need: { score: number; feedback: string };
-    timeline: { score: number; feedback: string };
-    improvements: string[];
-  };
+  evaluation: Record<string, any>;
+  methodology?: Methodology;
 }
 
 export default function Roleplay() {
@@ -43,8 +43,13 @@ export default function Roleplay() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
-  const [bantResult, setBantResult] = useState<BANTResult | null>(null);
+  const [evalResult, setEvalResult] = useState<EvalResult | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Role/methodology selection
+  const [roleType, setRoleType] = useState<RoleType | null>(null);
+  const [methodology, setMethodology] = useState<Methodology | null>(null);
+  const [selectionStep, setSelectionStep] = useState<"role" | "methodology" | "ready">("role");
 
   useEffect(() => {
     if (!user) return;
@@ -66,11 +71,26 @@ export default function Roleplay() {
     );
   };
 
+  const handleRoleSelect = (role: RoleType) => {
+    setRoleType(role);
+    if (role === "sdr") {
+      setMethodology("bant");
+      setSelectionStep("ready");
+    } else {
+      setSelectionStep("methodology");
+    }
+  };
+
+  const handleMethodologySelect = (m: Methodology) => {
+    setMethodology(m);
+    setSelectionStep("ready");
+  };
+
   const saveSession = async (msgs: Msg[]) => {
     if (!user || msgs.length < 2) return null;
 
     const title = msgs[0]?.content.slice(0, 60) || "Sessão sem título";
-    
+
     if (sessionId) {
       await supabase
         .from("roleplay_sessions")
@@ -86,6 +106,8 @@ export default function Roleplay() {
         title,
         messages: JSON.parse(JSON.stringify(msgs)),
         playbook_ids: selectedIds,
+        role_type: roleType,
+        methodology: methodology,
       }])
       .select("id")
       .single();
@@ -127,8 +149,8 @@ export default function Roleplay() {
         throw new Error(err.error || `HTTP ${resp.status}`);
       }
 
-      const result: BANTResult = await resp.json();
-      setBantResult(result);
+      const result: EvalResult = await resp.json();
+      setEvalResult(result);
       toast({ title: `Avaliação concluída: ${result.score}/10` });
     } catch (e: any) {
       console.error(e);
@@ -141,8 +163,11 @@ export default function Roleplay() {
   const startNewSession = () => {
     setMessages([]);
     setSessionId(null);
-    setBantResult(null);
+    setEvalResult(null);
     setInput("");
+    setRoleType(null);
+    setMethodology(null);
+    setSelectionStep("role");
   };
 
   const send = async () => {
@@ -172,6 +197,8 @@ export default function Roleplay() {
           body: JSON.stringify({
             messages: allMessages,
             playbook_ids: selectedIds,
+            role_type: roleType,
+            methodology: methodology,
           }),
         }
       );
@@ -223,7 +250,6 @@ export default function Roleplay() {
         }
       }
 
-      // flush remaining
       if (buffer.trim()) {
         for (const raw of buffer.split("\n")) {
           if (!raw || !raw.startsWith("data: ")) continue;
@@ -237,7 +263,6 @@ export default function Roleplay() {
         }
       }
 
-      // Auto-save after AI response
       const finalMessages = [...allMessages, { role: "assistant" as const, content: assistantSoFar }];
       void saveSession(finalMessages);
     } catch (e: any) {
@@ -255,6 +280,102 @@ export default function Roleplay() {
     }
   };
 
+  const methodologyLabel = methodology?.toUpperCase() || "BANT";
+
+  // Selection screen
+  if (selectionStep !== "ready") {
+    return (
+      <>
+        <Topbar title="Roleplay" description="Simulação de vendas com IA" onMenuClick={onMenuClick} />
+        <div className="flex-1 flex items-center justify-center px-4 py-8">
+          <div className="w-full max-w-md space-y-6">
+            {selectionStep === "role" && (
+              <>
+                <div className="text-center space-y-2">
+                  <h2 className="text-lg font-semibold text-foreground">Escolha o tipo de simulação</h2>
+                  <p className="text-sm text-muted-foreground">Selecione seu papel na simulação de vendas</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <Card
+                    className="p-5 cursor-pointer hover:border-primary transition-colors border-2"
+                    onClick={() => handleRoleSelect("sdr")}
+                  >
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-foreground">📞 Pré-vendas (SDR)</h3>
+                      <p className="text-sm text-muted-foreground">Qualificação de leads usando a metodologia BANT</p>
+                      <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium mt-1">
+                        BANT
+                      </span>
+                    </div>
+                  </Card>
+                  <Card
+                    className="p-5 cursor-pointer hover:border-primary transition-colors border-2"
+                    onClick={() => handleRoleSelect("closer")}
+                  >
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-foreground">🤝 Vendas (Closer)</h3>
+                      <p className="text-sm text-muted-foreground">Fechamento de negócios com cliente já qualificado</p>
+                      <div className="flex gap-1.5 mt-1">
+                        <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                          SPIN
+                        </span>
+                        <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                          GPCT
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </>
+            )}
+
+            {selectionStep === "methodology" && (
+              <>
+                <div className="text-center space-y-2">
+                  <h2 className="text-lg font-semibold text-foreground">Escolha a metodologia</h2>
+                  <p className="text-sm text-muted-foreground">Qual framework de vendas deseja praticar?</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <Card
+                    className="p-5 cursor-pointer hover:border-primary transition-colors border-2"
+                    onClick={() => handleMethodologySelect("spin")}
+                  >
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-foreground">🔄 SPIN Selling</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Situation → Problem → Implication → Need-Payoff
+                      </p>
+                    </div>
+                  </Card>
+                  <Card
+                    className="p-5 cursor-pointer hover:border-primary transition-colors border-2"
+                    onClick={() => handleMethodologySelect("gpct")}
+                  >
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-foreground">🎯 GPCT</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Goals → Plans → Challenges → Timeline
+                      </p>
+                    </div>
+                  </Card>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setRoleType(null); setSelectionStep("role"); }}
+                  className="w-full"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-1" />
+                  Voltar
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Topbar title="Roleplay" description="Simulação de vendas com IA" onMenuClick={onMenuClick} />
@@ -262,9 +383,13 @@ export default function Roleplay() {
       <div className="flex-1 flex flex-col overflow-hidden px-4 lg:px-8 py-4 gap-4">
         {/* Top actions */}
         <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary font-medium">
+            {roleType === "sdr" ? "SDR" : "Closer"} · {methodologyLabel}
+          </span>
+
           {playbooks.length > 0 && (
             <>
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
+              <BookOpen className="h-4 w-4 text-muted-foreground ml-2" />
               {playbooks.map((pb) => (
                 <button
                   key={pb.id}
@@ -284,11 +409,7 @@ export default function Roleplay() {
           <div className="ml-auto flex gap-2">
             {messages.length > 0 && (
               <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={startNewSession}
-                >
+                <Button variant="outline" size="sm" onClick={startNewSession}>
                   <Plus className="h-4 w-4 mr-1" />
                   Nova Sessão
                 </Button>
@@ -303,15 +424,17 @@ export default function Roleplay() {
                   ) : (
                     <Star className="h-4 w-4 mr-1" />
                   )}
-                  Avaliar BANT
+                  Avaliar {methodologyLabel}
                 </Button>
               </>
             )}
           </div>
         </div>
 
-        {/* BANT Result */}
-        {bantResult && <BANTEvaluation result={bantResult} />}
+        {/* Evaluation Result */}
+        {evalResult && (
+          <MethodologyEvaluation result={evalResult} methodology={methodology || "bant"} />
+        )}
 
         {/* Messages */}
         <ScrollArea className="flex-1">
