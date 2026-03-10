@@ -273,7 +273,15 @@ export default function Roleplay() {
           try {
             const parsed = JSON.parse(jsonStr);
             if (parsed.meta) {
-              setProspectInfo({ name: parsed.meta.prospect_name, company: parsed.meta.prospect_company });
+              setProspectInfo({
+                name: parsed.meta.prospect_name,
+                company: parsed.meta.prospect_company,
+                role: parsed.meta.prospect_role,
+                segment: parsed.meta.segment,
+                trafficInvestment: parsed.meta.trafficInvestment,
+                trafficResult: parsed.meta.trafficResult,
+                mainChallenge: parsed.meta.mainChallenge,
+              });
               continue;
             }
             const c = parsed.choices?.[0]?.delta?.content;
