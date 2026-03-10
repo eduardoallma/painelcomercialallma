@@ -105,6 +105,39 @@ export type Database = {
         }
         Relationships: []
       }
+      roleplay_sessions: {
+        Row: {
+          bant_feedback: string | null
+          created_at: string
+          id: string
+          messages: Json
+          owner_id: string
+          playbook_ids: string[] | null
+          score: number | null
+          title: string
+        }
+        Insert: {
+          bant_feedback?: string | null
+          created_at?: string
+          id?: string
+          messages?: Json
+          owner_id: string
+          playbook_ids?: string[] | null
+          score?: number | null
+          title?: string
+        }
+        Update: {
+          bant_feedback?: string | null
+          created_at?: string
+          id?: string
+          messages?: Json
+          owner_id?: string
+          playbook_ids?: string[] | null
+          score?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
