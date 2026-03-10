@@ -66,23 +66,46 @@ export default function Playbooks() {
         .insert({ owner_id: user.id, title: title.trim(), file_path: filePath })
         .select("id")
         .single();
-      if (insertError) throw insertError;
-
-      // Extract text
-      const { error: extractError } = await supabase.functions.invoke("extract-playbook", {
-        body: { playbook_id: pb.id },
-      });
-      if (extractError) {
-        console.error("Extract error:", extractError);
-        toast({ title: "Playbook salvo", description: "Mas houve um erro ao extrair o texto." });
-      } else {
-        toast({ title: "Playbook enviado com sucesso!" });
-      }
+      if (insertError || !pb) throw insertError ?? new Error("Falha ao salvar playbook");
 
       setTitle("");
       setFile(null);
       setDialogOpen(false);
       fetchPlaybooks();
+      toast({
+        title: "Playbook enviado com sucesso!",
+        description: "Estamos processando o texto em segundo plano.",
+      });
+
+      void supabase.functions
+        .invoke("extract-playbook", {
+          body: { playbook_id: pb.id },
+        })
+        .then(({ error: extractError }) => {
+          if (extractError) {
+            console.error("Extract error:", extractError);
+            toast({
+              title: "Erro ao processar playbook",
+              description: "O arquivo foi salvo, mas houve falha na extração do texto.",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          fetchPlaybooks();
+          toast({
+            title: "Texto extraído",
+            description: "Seu playbook já pode ser usado no Roleplay.",
+          });
+        })
+        .catch((extractError) => {
+          console.error("Extract error:", extractError);
+          toast({
+            title: "Erro ao processar playbook",
+            description: "O arquivo foi salvo, mas houve falha na extração do texto.",
+            variant: "destructive",
+          });
+        });
     } catch (e: any) {
       console.error(e);
       toast({ title: "Erro ao enviar", description: e.message, variant: "destructive" });
