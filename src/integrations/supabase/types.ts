@@ -14,7 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      meetings: {
+        Row: {
+          created_at: string
+          held_at: string | null
+          id: string
+          owner_id: string
+          scheduled_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          held_at?: string | null
+          id?: string
+          owner_id: string
+          scheduled_at: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          held_at?: string | null
+          id?: string
+          owner_id?: string
+          scheduled_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name?: string | null
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          role?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
