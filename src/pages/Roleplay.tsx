@@ -33,18 +33,15 @@ interface EvalResult {
   methodology?: Methodology;
 }
 
-export default function Roleplay() {
-  const { onMenuClick } = useOutletContext<{ onMenuClick: () => void }>();
-  const { user } = useAuth();
-  const [messages, setMessages] = useState<Msg[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [playbooks, setPlaybooks] = useState<PlaybookOption[]>([]);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  const [evalResult, setEvalResult] = useState<EvalResult | null>(null);
-  const [prospectInfo, setProspectInfo] = useState<{ name: string; company: string } | null>(null);
+interface ProspectInfo {
+  name: string;
+  company: string;
+  role: string;
+  segment: string;
+  trafficInvestment: string;
+  trafficResult: string;
+  mainChallenge: string;
+}
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Role/methodology selection
