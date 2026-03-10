@@ -396,7 +396,7 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = buildSystemPrompt(role_type, methodology, playbookContext, messages);
+    const { systemPrompt, profile } = buildSystemPrompt(role_type, methodology, playbookContext, messages);
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured");
@@ -441,6 +441,12 @@ serve(async (req) => {
 
     (async () => {
       try {
+        // Send profile metadata as first SSE event
+        const metaEvent = {
+          meta: { prospect_name: profile.name, prospect_company: profile.company },
+        };
+        await writer.write(encoder.encode(`data: ${JSON.stringify(metaEvent)}\n\n`));
+
         const reader = response.body!.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
