@@ -5,7 +5,8 @@ import AppShell from "@/components/layout/AppShell";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import Calculator from "@/pages/Calculator";
-import Placeholder from "@/pages/Placeholder";
+import Playbooks from "@/pages/Playbooks";
+import Roleplay from "@/pages/Roleplay";
 import NotFound from "@/pages/NotFound";
 
 const App = () => (
