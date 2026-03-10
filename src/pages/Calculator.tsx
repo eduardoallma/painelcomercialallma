@@ -24,7 +24,7 @@ const RATES: Record<string, number> = {
   r1Held: 0.8,
   r2Scheduled: 0.75,
   r2Held: 0.95,
-  contracts: 1,
+  contracts: 0.3,
   sales: 0.9,
 };
 
