@@ -4,6 +4,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import AppShell from "@/components/layout/AppShell";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
+import Calculator from "@/pages/Calculator";
 import Placeholder from "@/pages/Placeholder";
 import NotFound from "@/pages/NotFound";
 
