@@ -44,6 +44,7 @@ export default function Roleplay() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState<EvalResult | null>(null);
+  const [prospectInfo, setProspectInfo] = useState<{ name: string; company: string } | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Role/methodology selection
@@ -84,10 +85,19 @@ export default function Roleplay() {
     setSelectionStep("ready");
   };
 
+  const buildTitle = (score?: number | null) => {
+    const methodLabel = methodology?.toUpperCase() || "BANT";
+    const scoreStr = score != null ? `${score}/10` : "—";
+    if (prospectInfo) {
+      return `${prospectInfo.name} (${prospectInfo.company}) · ${methodLabel} · ${scoreStr}`;
+    }
+    return `Sessão · ${methodLabel} · ${scoreStr}`;
+  };
+
   const saveSession = async (msgs: Msg[]) => {
     if (!user || msgs.length < 2) return null;
 
-    const title = msgs[0]?.content.slice(0, 60) || "Sessão sem título";
+    const title = buildTitle();
 
     if (sessionId) {
       await supabase
@@ -150,6 +160,18 @@ export default function Roleplay() {
 
       const result: EvalResult = await resp.json();
       setEvalResult(result);
+
+      // Update title with score
+      const methodLabel = methodology?.toUpperCase() || "BANT";
+      const scoreStr = `${result.score}/10`;
+      const updatedTitle = prospectInfo
+        ? `${prospectInfo.name} (${prospectInfo.company}) · ${methodLabel} · ${scoreStr}`
+        : `Sessão · ${methodLabel} · ${scoreStr}`;
+      await supabase
+        .from("roleplay_sessions")
+        .update({ title: updatedTitle })
+        .eq("id", sid);
+
       toast({ title: `Avaliação concluída: ${result.score}/10` });
     } catch (e: any) {
       console.error(e);
@@ -167,6 +189,7 @@ export default function Roleplay() {
     setRoleType(null);
     setMethodology(null);
     setSelectionStep("role");
+    setProspectInfo(null);
   };
 
   const send = async () => {
@@ -239,6 +262,10 @@ export default function Roleplay() {
           if (jsonStr === "[DONE]") break;
           try {
             const parsed = JSON.parse(jsonStr);
+            if (parsed.meta) {
+              setProspectInfo({ name: parsed.meta.prospect_name, company: parsed.meta.prospect_company });
+              continue;
+            }
             const c = parsed.choices?.[0]?.delta?.content;
             if (c) upsert(c);
           } catch {
@@ -255,6 +282,7 @@ export default function Roleplay() {
           if (jsonStr === "[DONE]") continue;
           try {
             const parsed = JSON.parse(jsonStr);
+            if (parsed.meta) continue;
             const c = parsed.choices?.[0]?.delta?.content;
             if (c) upsert(c);
           } catch {}

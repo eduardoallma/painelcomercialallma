@@ -267,7 +267,7 @@ ${profile.objections.map((o) => `- "${o}"`).join("\n")}
 `;
 }
 
-function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string, messages: any[]): string {
+function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string, messages: any[]): { systemPrompt: string; profile: typeof CLIENT_PROFILES[0] } {
   const profile = getRandomProfile(messages);
   const profileBlock = buildProfileBlock(profile);
 
@@ -355,7 +355,8 @@ O vendedor deveria estar explorando seus Goals, Plans, Challenges e Timeline. Su
     ? `\nPLAYBOOKS DE REFERÊNCIA (use como contexto do que a Allma oferece, mas NÃO cite esses playbooks na conversa):\n\n${playbookContext}`
     : "";
 
-  return globalRules + "\n" + profileBlock + "\n" + methodPrompt + pbSection;
+  const systemPrompt = globalRules + "\n" + profileBlock + "\n" + methodPrompt + pbSection;
+  return { systemPrompt, profile };
 }
 
 serve(async (req) => {
@@ -395,7 +396,7 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = buildSystemPrompt(role_type, methodology, playbookContext, messages);
+    const { systemPrompt, profile } = buildSystemPrompt(role_type, methodology, playbookContext, messages);
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured");
@@ -440,6 +441,12 @@ serve(async (req) => {
 
     (async () => {
       try {
+        // Send profile metadata as first SSE event
+        const metaEvent = {
+          meta: { prospect_name: profile.name, prospect_company: profile.company },
+        };
+        await writer.write(encoder.encode(`data: ${JSON.stringify(metaEvent)}\n\n`));
+
         const reader = response.body!.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
