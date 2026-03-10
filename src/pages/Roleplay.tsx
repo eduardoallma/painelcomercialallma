@@ -74,19 +74,19 @@ export default function Roleplay() {
     if (sessionId) {
       await supabase
         .from("roleplay_sessions")
-        .update({ messages: msgs as unknown as Record<string, unknown>[], title })
+        .update({ messages: JSON.parse(JSON.stringify(msgs)), title })
         .eq("id", sessionId);
       return sessionId;
     }
 
     const { data, error } = await supabase
       .from("roleplay_sessions")
-      .insert({
+      .insert([{
         owner_id: user.id,
         title,
-        messages: msgs as unknown as Record<string, unknown>[],
+        messages: JSON.parse(JSON.stringify(msgs)),
         playbook_ids: selectedIds,
-      })
+      }])
       .select("id")
       .single();
 
