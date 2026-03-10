@@ -189,6 +189,7 @@ export default function Roleplay() {
     setRoleType(null);
     setMethodology(null);
     setSelectionStep("role");
+    setProspectInfo(null);
   };
 
   const send = async () => {
