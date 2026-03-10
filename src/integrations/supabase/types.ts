@@ -111,8 +111,10 @@ export type Database = {
           created_at: string
           id: string
           messages: Json
+          methodology: string | null
           owner_id: string
           playbook_ids: string[] | null
+          role_type: string | null
           score: number | null
           title: string
         }
@@ -121,8 +123,10 @@ export type Database = {
           created_at?: string
           id?: string
           messages?: Json
+          methodology?: string | null
           owner_id: string
           playbook_ids?: string[] | null
+          role_type?: string | null
           score?: number | null
           title?: string
         }
@@ -131,8 +135,10 @@ export type Database = {
           created_at?: string
           id?: string
           messages?: Json
+          methodology?: string | null
           owner_id?: string
           playbook_ids?: string[] | null
+          role_type?: string | null
           score?: number | null
           title?: string
         }

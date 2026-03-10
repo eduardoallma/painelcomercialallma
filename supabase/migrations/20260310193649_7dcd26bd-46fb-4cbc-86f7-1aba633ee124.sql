@@ -1,0 +1,1 @@
+ALTER TABLE public.roleplay_sessions ADD COLUMN role_type text, ADD COLUMN methodology text;
