@@ -21,10 +21,10 @@ serve(async (req) => {
     );
 
     const token = authHeader.replace("Bearer ", "");
-    const { data, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !data?.claims) throw new Error("Unauthorized");
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) throw new Error("Unauthorized");
 
-    const userId = data.claims.sub as string;
+    const userId = user.id;
 
     const { messages, playbook_ids } = await req.json();
     if (!messages || !Array.isArray(messages)) throw new Error("messages[] is required");
