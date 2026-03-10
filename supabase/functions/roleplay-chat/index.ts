@@ -7,8 +7,256 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string): string {
+const CLIENT_PROFILES = [
+  {
+    name: "Ricardo Mendes",
+    role: "Dono / Diretor",
+    company: "FitLife Academia",
+    segment: "Fitness / Academias",
+    revenue: "R$1.2M/ano",
+    teamSize: "12 pessoas",
+    pains: [
+      "Gasta R$5k/mês em Meta Ads sem controle de CAC",
+      "Não sabe qual campanha realmente traz novos alunos",
+      "Landing page genérica com taxa de conversão abaixo de 2%",
+      "Concorrência local investindo pesado em tráfego pago",
+    ],
+    urgency: "Alta — época de matrículas começa em 2 meses",
+    objections: [
+      "Já tentei impulsionar posts e não funcionou",
+      "Meu sobrinho cuida das redes, não sei se preciso de agência",
+      "Meu ticket é baixo, não sei se compensa investir em tráfego",
+    ],
+  },
+  {
+    name: "Camila Ferreira",
+    role: "Sócia-proprietária",
+    company: "Dra. Camila Estética",
+    segment: "Clínica de estética",
+    revenue: "R$3M/ano",
+    teamSize: "18 pessoas",
+    pains: [
+      "90% dos clientes vêm por indicação — crescimento estagnado",
+      "Tentou Google Ads sozinha e gastou R$8k sem resultado",
+      "Não tem pixel instalado nem rastreamento de conversões",
+      "Não sabe a diferença entre campanha de alcance e conversão",
+    ],
+    urgency: "Média — quer dobrar o faturamento em 12 meses",
+    objections: [
+      "Já queimei dinheiro com marketing digital antes",
+      "Minha recepcionista não dá conta de atender muitos leads",
+      "Tenho medo de atrair paciente que só quer preço baixo",
+    ],
+  },
+  {
+    name: "Felipe Andrade",
+    role: "Head de Marketing",
+    company: "EduPlus Cursos",
+    segment: "Educação online",
+    revenue: "R$8M/ano",
+    teamSize: "35 pessoas",
+    pains: [
+      "CPL no Google Search acima de R$45 — meta é R$25",
+      "Funil de remarketing inexistente, perde leads quentes",
+      "Equipe interna júnior, sem expertise em mídia paga",
+      "Concorrentes como Hotmart e Udemy dominam os leilões",
+    ],
+    urgency: "Alta — lançamento de curso novo em 6 semanas",
+    objections: [
+      "Já temos uma pessoa interna que faz isso",
+      "Nosso LTV é longo, difícil provar ROI no curto prazo",
+      "Preciso aprovar com o CEO antes de qualquer decisão",
+    ],
+  },
+  {
+    name: "Patrícia Duarte",
+    role: "Gerente Comercial",
+    company: "CasaNova Imóveis",
+    segment: "Imobiliária",
+    revenue: "R$15M/ano",
+    teamSize: "40 pessoas (20 corretores)",
+    pains: [
+      "Leads do Meta Ads desqualificados — corretores reclamam diariamente",
+      "Formulário genérico sem qualificação prévia",
+      "Não segmenta campanhas por tipo de imóvel ou faixa de renda",
+      "Taxa de conversão lead→visita abaixo de 3%",
+    ],
+    urgency: "Alta — diretoria cobrando resultado este trimestre",
+    objections: [
+      "Meus corretores dizem que os leads de internet não prestam",
+      "Já trabalhamos com uma agência e não deu certo",
+      "O mercado imobiliário é diferente, tráfego pago não funciona pra gente",
+    ],
+  },
+  {
+    name: "Marcos Oliveira",
+    role: "CEO",
+    company: "PetShop Mais",
+    segment: "Varejo pet / E-commerce",
+    revenue: "R$5M/ano",
+    teamSize: "22 pessoas",
+    pains: [
+      "E-commerce com ROAS abaixo de 2x no Meta Ads",
+      "Não usa catálogo dinâmico nem lookalike de compradores",
+      "Carrinho abandonado sem automação de recuperação",
+      "Google Shopping mal configurado, CPC altíssimo",
+    ],
+    urgency: "Média — quer escalar antes da Black Friday",
+    objections: [
+      "Marketplace já me dá venda, por que investir em site próprio?",
+      "Meu ticket médio é R$120, será que fecha conta?",
+      "Já tentei Google Shopping e o custo comeu toda a margem",
+    ],
+  },
+  {
+    name: "Juliana Rocha",
+    role: "VP de Growth",
+    company: "TechSaaS Pro",
+    segment: "SaaS B2B",
+    revenue: "R$25M/ano",
+    teamSize: "80 pessoas",
+    pains: [
+      "Custo por trial no LinkedIn Ads acima de R$200",
+      "Conversão trial→pago em apenas 8% (meta é 15%)",
+      "Google Ads traz leads B2C que não convertem",
+      "Sem estratégia de ABM nem retargeting por estágio do funil",
+    ],
+    urgency: "Alta — board cobrando eficiência de CAC neste quarter",
+    objections: [
+      "Nosso ciclo de venda é longo, difícil atribuir ao tráfego",
+      "Já temos um time interno de growth, por que contratar fora?",
+      "LinkedIn Ads é caro demais, estamos pensando em cortar",
+    ],
+  },
+  {
+    name: "Eduardo Campos",
+    role: "Diretor de Marketing",
+    company: "Construtora Horizonte",
+    segment: "Construção civil / Incorporadora",
+    revenue: "R$60M/ano",
+    teamSize: "150 pessoas",
+    pains: [
+      "Investe R$80k/mês em tráfego sem dashboard unificado",
+      "Não mede atribuição — não sabe se a venda veio do Google ou do stand",
+      "Agência atual entrega relatório de vaidade (impressões e cliques)",
+      "Cada empreendimento tem campanha separada sem estratégia integrada",
+    ],
+    urgency: "Média — lançamento de novo empreendimento em 4 meses",
+    objections: [
+      "Já temos agência, por que trocar?",
+      "Imóvel de alto padrão não se vende por clique",
+      "Nosso processo de decisão envolve o conselho, é demorado",
+    ],
+  },
+  {
+    name: "Ana Carolina Lima",
+    role: "Fundadora / CEO",
+    company: "FoodExpress Delivery",
+    segment: "Alimentação / Delivery",
+    revenue: "R$12M/ano",
+    teamSize: "55 pessoas",
+    pains: [
+      "Dependência total do iFood — paga 27% de comissão",
+      "Quer canal próprio mas não sabe estruturar tráfego para app/site",
+      "Tentou panfletagem digital (impulsionamento) sem estratégia",
+      "Sem CRM nem automação para base de clientes existente",
+    ],
+    urgency: "Alta — margem sendo corroída pelo iFood mês a mês",
+    objections: [
+      "Meu cliente já está no iFood, por que ele viria pro meu app?",
+      "Não tenho equipe pra gerenciar mais um canal",
+      "O investimento inicial me assusta, e se não der retorno?",
+    ],
+  },
+  {
+    name: "Beatriz Monteiro",
+    role: "Diretora de E-commerce",
+    company: "ModaViva E-commerce",
+    segment: "Moda feminina",
+    revenue: "R$35M/ano",
+    teamSize: "70 pessoas",
+    pains: [
+      "Escala travada em Meta Ads — CPA subindo 15% ao mês",
+      "Sem estratégia de criativos, usa as mesmas peças há 6 meses",
+      "Público lookalike saturado, frequência acima de 5",
+      "TikTok Ads não decolou, investiu R$20k sem aprender",
+    ],
+    urgency: "Alta — coleção nova em 3 semanas, precisa de tração",
+    objections: [
+      "Já gastamos muito em agência e o resultado caiu igual",
+      "Nosso time de design não dá conta de produzir criativos no volume necessário",
+      "Como vocês vão resolver algo que nossa equipe interna não conseguiu?",
+    ],
+  },
+  {
+    name: "Carlos Henrique Souza",
+    role: "Diretor Comercial",
+    company: "AutoPeças Nacional",
+    segment: "Autopeças B2B",
+    revenue: "R$100M/ano",
+    teamSize: "200 pessoas",
+    pains: [
+      "Marketing digital praticamente inexistente — 100% via representantes",
+      "Site institucional sem geração de demanda",
+      "Concorrentes menores ganhando mercado com Google Ads e SEO",
+      "Não tem nem Google Analytics configurado corretamente",
+    ],
+    urgency: "Baixa — reconhece a necessidade mas não tem pressa",
+    objections: [
+      "Nosso negócio é relacional, não se vende autopeça por clique",
+      "Nossos vendedores não vão aceitar leads de internet",
+      "Preciso ver cases do nosso segmento específico antes de investir",
+    ],
+  },
+];
+
+function getRandomProfile(messages: any[]): typeof CLIENT_PROFILES[0] {
+  const idx = messages.length <= 1
+    ? Math.floor(Math.random() * CLIENT_PROFILES.length)
+    : Math.abs(JSON.stringify(messages[0]).length) % CLIENT_PROFILES.length;
+  return CLIENT_PROFILES[idx];
+}
+
+function buildProfileBlock(profile: typeof CLIENT_PROFILES[0]): string {
+  return `
+PERFIL DO CLIENTE (interprete este personagem):
+Nome: ${profile.name}
+Cargo: ${profile.role}
+Empresa: ${profile.company}
+Segmento: ${profile.segment}
+Faturamento: ${profile.revenue}
+Equipe: ${profile.teamSize}
+Dores:
+${profile.pains.map((p) => `- ${p}`).join("\n")}
+Urgência: ${profile.urgency}
+Objeções típicas que você deve usar naturalmente na conversa:
+${profile.objections.map((o) => `- "${o}"`).join("\n")}
+`;
+}
+
+function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string, messages: any[]): string {
   const base = `Você é um assistente de treinamento comercial da Allma. Responda sempre em português brasileiro. Seja desafiador mas justo nas simulações.\n\n`;
+
+  const profile = getRandomProfile(messages);
+  const profileBlock = buildProfileBlock(profile);
+
+  const sdrObjective = `
+OBJETIVO DA SIMULAÇÃO (SDR — Pré-vendas):
+- Você é um PROSPECT que ainda NÃO agendou reunião.
+- O vendedor (SDR) precisa convencê-lo a agendar uma reunião com o closer/especialista.
+- NÃO aceite a reunião facilmente. Exija que o SDR demonstre que entende seu problema antes de aceitar.
+- Se o SDR fizer boas perguntas e gerar valor, aceite agendar a reunião.
+- Se o SDR for genérico ou empurrar reunião sem contexto, recuse educadamente.
+`;
+
+  const closerObjective = `
+OBJETIVO DA SIMULAÇÃO (Closer — Vendas):
+- Você é um CLIENTE que já foi qualificado pelo SDR e está em reunião de vendas.
+- Você tem interesse mas HESITA em fechar o contrato.
+- Faça objeções de preço, ROI, concorrência, timing e necessidade de aprovação interna.
+- Se o closer conduzir bem a conversa e resolver suas objeções, demonstre abertura para fechar.
+- Se o closer for superficial ou não conectar a solução às suas dores, resista ao fechamento.
+`;
 
   const methodologyPrompts: Record<string, string> = {
     bant: `Você está simulando um PROSPECT em fase de QUALIFICAÇÃO. O vendedor é um SDR (pré-vendas) que deve qualificá-lo usando a metodologia BANT.
@@ -19,38 +267,41 @@ INSTRUÇÕES PARA O PROSPECT:
 3. Pode ou não ser o tomador de decisão — faça o vendedor descobrir
 4. Tenha dores e necessidades reais, mas exija que o vendedor as descubra com boas perguntas
 5. Tenha uma timeline em mente (urgente ou não)
-6. Faça objeções naturais: "preciso falar com meu chefe", "não temos budget agora", etc.
-7. Reaja positivamente quando o vendedor fizer boas perguntas de qualificação`,
+6. Faça objeções naturais usando as objeções do seu perfil
+7. Reaja positivamente quando o vendedor fizer boas perguntas de qualificação
+${sdrObjective}`,
 
     spin: `Você está simulando um CLIENTE já qualificado em uma reunião de vendas. O vendedor é um Closer que deve usar a metodologia SPIN Selling.
 
 INSTRUÇÕES PARA O CLIENTE:
 1. Você já passou pela qualificação e tem interesse no produto/serviço
-2. Tenha uma SITUAÇÃO atual bem definida (processos, ferramentas, equipe)
-3. Tenha PROBLEMAS reais que enfrenta no dia a dia
-4. Quando o vendedor explorar IMPLICAÇÕES, revele impactos maiores (perda de receita, ineficiência, turnover)
+2. Tenha uma SITUAÇÃO atual bem definida (use os dados do seu perfil)
+3. Tenha PROBLEMAS reais que enfrenta no dia a dia (use as dores do perfil)
+4. Quando o vendedor explorar IMPLICAÇÕES, revele impactos maiores (perda de receita, ineficiência)
 5. Esteja aberto a reconhecer o valor (NEED-PAYOFF) quando bem conduzido
 6. Resista a propostas genéricas — exija que o vendedor entenda seu contexto antes de propor soluções
-7. Faça objeções de valor: "como isso é diferente do que já temos?"`,
+7. Use as objeções do seu perfil naturalmente
+${closerObjective}`,
 
     gpct: `Você está simulando um CLIENTE já qualificado em uma reunião de vendas. O vendedor é um Closer que deve usar a metodologia GPCT.
 
 INSTRUÇÕES PARA O CLIENTE:
 1. Você já passou pela qualificação e tem interesse no produto/serviço
-2. Tenha GOALS (metas) claros para o trimestre/ano (crescer X%, reduzir churn, etc.)
+2. Tenha GOALS (metas) claros baseados no seu perfil
 3. Tenha PLANS (planos) em andamento para alcançar essas metas
-4. Enfrente CHALLENGES (desafios) reais que dificultam a execução dos planos
-5. Tenha uma TIMELINE definida (deadline de projeto, fim do trimestre, renovação de contrato)
-6. Faça objeções estratégicas: "já temos um plano para isso", "nosso timeline é apertado"
-7. Valorize quando o vendedor conectar a solução aos seus goals específicos`,
+4. Enfrente CHALLENGES (desafios) reais — use as dores do seu perfil
+5. Tenha uma TIMELINE definida baseada na urgência do seu perfil
+6. Use as objeções do seu perfil naturalmente
+7. Valorize quando o vendedor conectar a solução aos seus goals específicos
+${closerObjective}`,
   };
 
   const methodPrompt = methodologyPrompts[methodology] || methodologyPrompts.bant;
   const pbSection = playbookContext
     ? `\nPLAYBOOKS DE REFERÊNCIA:\n\n${playbookContext}`
-    : "\nNenhum playbook selecionado. Use um cenário genérico.";
+    : "\nNenhum playbook selecionado. Use um cenário genérico de agência de marketing digital/tráfego pago.";
 
-  return base + methodPrompt + pbSection;
+  return base + profileBlock + "\n" + methodPrompt + pbSection;
 }
 
 serve(async (req) => {
