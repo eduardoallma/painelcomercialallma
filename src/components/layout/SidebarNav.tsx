@@ -3,7 +3,8 @@ import { useAuth } from "@/contexts/AuthProvider";
 
 const links = [
   { to: "/dashboard", label: "Painel" },
-  { to: "/calculator", label: "Calculadora" },
+  { to: "/calculator", label: "Calculadora de Funil" },
+  { to: "/commission-calculator", label: "Calculadora de Comissão" },
   { to: "/roleplay", label: "Roleplay" },
   { to: "/roleplay/history", label: "Histórico" },
   { to: "/playbooks", label: "Playbooks" },

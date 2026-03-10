@@ -93,7 +93,7 @@ export default function Calculator() {
 
   return (
     <>
-      <Topbar title="Calculadora" description="Calculadora comercial" onMenuClick={onMenuClick} />
+      <Topbar title="Calculadora de Funil" description="Calculadora comercial" onMenuClick={onMenuClick} />
 
       <div className="p-6 lg:p-8 space-y-8 max-w-6xl">
         {/* Funnel inputs */}
