@@ -59,7 +59,7 @@ export default function Dashboard() {
   return (
     <>
       <Topbar
-        title="Dashboard"
+        title="Painel"
         description="Visão geral das suas reuniões"
         onMenuClick={onMenuClick}
       />

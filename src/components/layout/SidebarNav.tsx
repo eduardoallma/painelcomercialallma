@@ -2,9 +2,9 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
 
 const links = [
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/calculator", label: "Calculator" },
-  { to: "/roleplay", label: "Roleplay" },
+  { to: "/dashboard", label: "Painel" },
+  { to: "/calculator", label: "Calculadora" },
+  { to: "/roleplay", label: "Simulação" },
   { to: "/playbooks", label: "Playbooks" },
 ];
 
