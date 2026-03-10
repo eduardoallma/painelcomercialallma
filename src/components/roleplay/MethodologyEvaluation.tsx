@@ -9,11 +9,7 @@ interface PillarResult {
 
 interface EvaluationResult {
   score: number;
-  evaluation: {
-    summary: string;
-    improvements: string[];
-    [key: string]: any;
-  };
+  evaluation: Record<string, any>;
 }
 
 type Methodology = "bant" | "spin" | "gpct";
