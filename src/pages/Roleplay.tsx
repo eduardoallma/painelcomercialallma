@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft } from "lucide-react";
+import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2, Target, TrendingUp, AlertCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
 
@@ -33,6 +33,16 @@ interface EvalResult {
   methodology?: Methodology;
 }
 
+interface ProspectInfo {
+  name: string;
+  company: string;
+  role: string;
+  segment: string;
+  trafficInvestment: string;
+  trafficResult: string;
+  mainChallenge: string;
+}
+
 export default function Roleplay() {
   const { onMenuClick } = useOutletContext<{ onMenuClick: () => void }>();
   const { user } = useAuth();
@@ -44,7 +54,7 @@ export default function Roleplay() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState<EvalResult | null>(null);
-  const [prospectInfo, setProspectInfo] = useState<{ name: string; company: string } | null>(null);
+  const [prospectInfo, setProspectInfo] = useState<ProspectInfo | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Role/methodology selection
@@ -263,7 +273,15 @@ export default function Roleplay() {
           try {
             const parsed = JSON.parse(jsonStr);
             if (parsed.meta) {
-              setProspectInfo({ name: parsed.meta.prospect_name, company: parsed.meta.prospect_company });
+              setProspectInfo({
+                name: parsed.meta.prospect_name,
+                company: parsed.meta.prospect_company,
+                role: parsed.meta.prospect_role,
+                segment: parsed.meta.segment,
+                trafficInvestment: parsed.meta.trafficInvestment,
+                trafficResult: parsed.meta.trafficResult,
+                mainChallenge: parsed.meta.mainChallenge,
+              });
               continue;
             }
             const c = parsed.choices?.[0]?.delta?.content;
@@ -451,6 +469,42 @@ export default function Roleplay() {
             )}
           </div>
         </div>
+
+        {/* Lead Info Card */}
+        {prospectInfo && (
+          <Card className="p-4 border-border/50">
+            <div className="flex items-start gap-3">
+              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <User className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-sm font-semibold text-foreground">{prospectInfo.name}</h3>
+                  <span className="text-xs text-muted-foreground">·</span>
+                  <span className="text-xs text-muted-foreground">{prospectInfo.role}</span>
+                </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-1.5 text-xs">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Building2 className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{prospectInfo.company} · {prospectInfo.segment}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <TrendingUp className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">Investimento: {prospectInfo.trafficInvestment}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Target className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">Resultado: {prospectInfo.trafficResult}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <AlertCircle className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">Desafio: {prospectInfo.mainChallenge}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Evaluation Result */}
         {evalResult && <MethodologyEvaluation result={evalResult} methodology={methodology || "bant"} />}
