@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthProvider";
@@ -14,6 +14,7 @@ import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import ReactMarkdown from "react-markdown";
 import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
+import SessionHistory, { type HistorySession } from "@/components/roleplay/SessionHistory";
 
 interface Msg {
   role: "user" | "assistant";
@@ -58,10 +59,27 @@ export default function Roleplay() {
   const [prospectInfo, setProspectInfo] = useState<ProspectInfo | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // History
+  const [historySessions, setHistorySessions] = useState<HistorySession[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+
   // Role/methodology selection
   const [roleType, setRoleType] = useState<RoleType | null>(null);
   const [methodology, setMethodology] = useState<Methodology | null>(null);
   const [selectionStep, setSelectionStep] = useState<"role" | "methodology" | "ready">("role");
+
+  const loadHistory = useCallback(() => {
+    if (!user) return;
+    supabase
+      .from("roleplay_sessions")
+      .select("id, title, messages, score, bant_feedback, methodology, created_at")
+      .eq("owner_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setHistorySessions((data as unknown as HistorySession[]) ?? []);
+        setHistoryLoading(false);
+      });
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -71,7 +89,8 @@ export default function Roleplay() {
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => setPlaybooks(data ?? []));
-  }, [user]);
+    loadHistory();
+  }, [user, loadHistory]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -184,6 +203,7 @@ export default function Roleplay() {
         .eq("id", sid);
 
       toast({ title: `Avaliação concluída: ${result.score}/10` });
+      loadHistory();
     } catch (e: any) {
       console.error(e);
       toast({ title: "Erro na avaliação", description: e.message, variant: "destructive" });
@@ -309,7 +329,7 @@ export default function Roleplay() {
       }
 
       const finalMessages = [...allMessages, { role: "assistant" as const, content: assistantSoFar }];
-      void saveSession(finalMessages);
+      void saveSession(finalMessages).then(() => loadHistory());
     } catch (e: any) {
       console.error(e);
       toast({ title: "Erro no chat", description: e.message, variant: "destructive" });
@@ -585,6 +605,16 @@ export default function Roleplay() {
           <Button onClick={send} disabled={!input.trim() || isLoading} size="icon" className="flex-shrink-0">
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
+        </div>
+
+        {/* History */}
+        <div className="border-t border-border pt-4 mt-2">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Histórico de sessões</h3>
+          <SessionHistory
+            sessions={historySessions}
+            loading={historyLoading}
+            onDeleted={(id) => setHistorySessions((prev) => prev.filter((s) => s.id !== id))}
+          />
         </div>
       </div>
     </>

@@ -8,7 +8,7 @@ import Calculator from "@/pages/Calculator";
 import CommissionCalculator from "@/pages/CommissionCalculator";
 import Playbooks from "@/pages/Playbooks";
 import Roleplay from "@/pages/Roleplay";
-import RoleplayHistory from "@/pages/RoleplayHistory";
+
 import NotFound from "@/pages/NotFound";
 
 const App = () => (
@@ -27,7 +27,7 @@ const App = () => (
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/commission-calculator" element={<CommissionCalculator />} />
           <Route path="/roleplay" element={<Roleplay />} />
-          <Route path="/roleplay/history" element={<RoleplayHistory />} />
+          
           <Route path="/playbooks" element={<Playbooks />} />
         </Route>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
