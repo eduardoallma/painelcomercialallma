@@ -23,8 +23,8 @@ const App = () => (
         >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/calculator" element={<Calculator />} />
-          <Route path="/roleplay" element={<Placeholder page="roleplay" />} />
-          <Route path="/playbooks" element={<Placeholder page="playbooks" />} />
+          <Route path="/roleplay" element={<Roleplay />} />
+          <Route path="/playbooks" element={<Playbooks />} />
         </Route>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<NotFound />} />
