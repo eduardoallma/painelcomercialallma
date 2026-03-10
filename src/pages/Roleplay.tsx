@@ -66,9 +66,7 @@ export default function Roleplay() {
   }, [messages]);
 
   const togglePlaybook = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const handleRoleSelect = (role: RoleType) => {
@@ -101,14 +99,16 @@ export default function Roleplay() {
 
     const { data, error } = await supabase
       .from("roleplay_sessions")
-      .insert([{
-        owner_id: user.id,
-        title,
-        messages: JSON.parse(JSON.stringify(msgs)),
-        playbook_ids: selectedIds,
-        role_type: roleType,
-        methodology: methodology,
-      }])
+      .insert([
+        {
+          owner_id: user.id,
+          title,
+          messages: JSON.parse(JSON.stringify(msgs)),
+          playbook_ids: selectedIds,
+          role_type: roleType,
+          methodology: methodology,
+        },
+      ])
       .select("id")
       .single();
 
@@ -129,20 +129,19 @@ export default function Roleplay() {
       const sid = await saveSession(messages);
       if (!sid) throw new Error("Falha ao salvar sessão");
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.access_token) throw new Error("Sessão expirada");
 
-      const resp = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/evaluate-roleplay`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ session_id: sid }),
-        }
-      );
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/evaluate-roleplay`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ session_id: sid }),
+      });
 
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({ error: "Erro desconhecido" }));
@@ -183,25 +182,24 @@ export default function Roleplay() {
     let assistantSoFar = "";
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.access_token) throw new Error("Sessão expirada. Faça login novamente.");
 
-      const resp = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/roleplay-chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            messages: allMessages,
-            playbook_ids: selectedIds,
-            role_type: roleType,
-            methodology: methodology,
-          }),
-        }
-      );
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/roleplay-chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          messages: allMessages,
+          playbook_ids: selectedIds,
+          role_type: roleType,
+          methodology: methodology,
+        }),
+      });
 
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({ error: "Erro desconhecido" }));
@@ -342,9 +340,7 @@ export default function Roleplay() {
                   >
                     <div className="space-y-1">
                       <h3 className="font-semibold text-foreground">🔄 SPIN Selling</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Situation → Problem → Implication → Need-Payoff
-                      </p>
+                      <p className="text-sm text-muted-foreground">Situation → Problem → Implication → Need-Payoff</p>
                     </div>
                   </Card>
                   <Card
@@ -353,16 +349,17 @@ export default function Roleplay() {
                   >
                     <div className="space-y-1">
                       <h3 className="font-semibold text-foreground">🎯 GPCT</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Goals → Plans → Challenges → Timeline
-                      </p>
+                      <p className="text-sm text-muted-foreground">Goals → Plans → Challenges → Timeline</p>
                     </div>
                   </Card>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { setRoleType(null); setSelectionStep("role"); }}
+                  onClick={() => {
+                    setRoleType(null);
+                    setSelectionStep("role");
+                  }}
                   className="w-full"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
@@ -419,11 +416,7 @@ export default function Roleplay() {
                   onClick={evaluateSession}
                   disabled={isEvaluating || messages.length < 2}
                 >
-                  {isEvaluating ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                  ) : (
-                    <Star className="h-4 w-4 mr-1" />
-                  )}
+                  {isEvaluating ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Star className="h-4 w-4 mr-1" />}
                   Avaliar {methodologyLabel}
                 </Button>
               </>
@@ -432,9 +425,7 @@ export default function Roleplay() {
         </div>
 
         {/* Evaluation Result */}
-        {evalResult && (
-          <MethodologyEvaluation result={evalResult} methodology={methodology || "bant"} />
-        )}
+        {evalResult && <MethodologyEvaluation result={evalResult} methodology={methodology || "bant"} />}
 
         {/* Messages */}
         <ScrollArea className="flex-1">
@@ -447,15 +438,10 @@ export default function Roleplay() {
               </div>
             )}
             {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-3 text-sm ${
-                    m.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card text-card-foreground"
+                    m.role === "user" ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground"
                   }`}
                 >
                   {m.role === "assistant" ? (
