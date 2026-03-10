@@ -329,7 +329,7 @@ export default function Roleplay() {
       }
 
       const finalMessages = [...allMessages, { role: "assistant" as const, content: assistantSoFar }];
-      void saveSession(finalMessages);
+      void saveSession(finalMessages).then(() => loadHistory());
     } catch (e: any) {
       console.error(e);
       toast({ title: "Erro no chat", description: e.message, variant: "destructive" });
