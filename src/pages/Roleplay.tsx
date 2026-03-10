@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthProvider";
@@ -14,6 +14,7 @@ import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import ReactMarkdown from "react-markdown";
 import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
+import SessionHistory, { type HistorySession } from "@/components/roleplay/SessionHistory";
 
 interface Msg {
   role: "user" | "assistant";
