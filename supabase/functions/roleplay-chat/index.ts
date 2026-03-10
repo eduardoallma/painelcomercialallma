@@ -20,8 +20,11 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) throw new Error("Unauthorized");
+    const token = authHeader.replace("Bearer ", "");
+    const { data, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !data?.claims) throw new Error("Unauthorized");
+
+    const userId = data.claims.sub as string;
 
     const { messages, playbook_ids } = await req.json();
     if (!messages || !Array.isArray(messages)) throw new Error("messages[] is required");
@@ -33,7 +36,7 @@ serve(async (req) => {
         .from("playbooks")
         .select("title, extracted_text")
         .in("id", playbook_ids)
-        .eq("owner_id", user.id);
+        .eq("owner_id", userId);
 
       if (playbooks && playbooks.length > 0) {
         playbookContext = playbooks
