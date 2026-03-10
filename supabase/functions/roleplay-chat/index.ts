@@ -16,13 +16,16 @@ const CLIENT_PROFILES = [
     revenue: "R$1.2M/ano",
     teamSize: "12 pessoas",
     personality: "Direto, impaciente, fala rápido. Não gosta de enrolação. Se o vendedor demorar para chegar ao ponto, encurta a conversa.",
+    trafficInvestment: "Entre R$ 1.000 e R$ 3.000",
+    trafficResult: "Não trouxe nenhum retorno",
+    mainChallenge: "Falta de previsibilidade",
     pains: [
-      "Gasta R$5k/mês em Meta Ads sem controle de CAC",
+      "Gasta em Meta Ads mas não sabe o CAC real",
       "Não sabe qual campanha realmente traz novos alunos",
-      "Landing page genérica com taxa de conversão abaixo de 2%",
-      "Concorrência local investindo pesado em tráfego pago",
+      "Concorrência local investindo pesado e aparecendo mais",
+      "Sente que joga dinheiro fora todo mês",
     ],
-    budget: { range: "R$3k a R$8k/mês", willingness: "Tem caixa mas precisa ver lógica antes de investir" },
+    budget: { range: "R$3k a R$8k/mês", willingness: "Tem caixa mas precisa ver lógica antes de investir mais" },
     authority: "Decide sozinho, mas consulta a esposa que também é sócia",
     urgency: "Alta — época de matrículas começa em 2 meses",
     objections: [
@@ -38,12 +41,15 @@ const CLIENT_PROFILES = [
     segment: "Clínica de estética",
     revenue: "R$3M/ano",
     teamSize: "18 pessoas",
-    personality: "Cautelosa, analítica, faz muitas perguntas. Já se queimou antes e não vai se comprometer fácil. Quer entender cada detalhe antes de avançar.",
+    personality: "Cautelosa, analítica, faz muitas perguntas. Já se queimou antes e não vai se comprometer fácil.",
+    trafficInvestment: "Entre R$ 1.000 e R$ 3.000",
+    trafficResult: "Não trouxe nenhum retorno",
+    mainChallenge: "Receio de investir mais em Tráfego, sem segurança de resultados",
     pains: [
       "90% dos clientes vêm por indicação — crescimento estagnado",
-      "Tentou Google Ads sozinha e gastou R$8k sem resultado",
+      "Gastou R$8k em Google Ads sozinha sem resultado",
       "Não tem pixel instalado nem rastreamento de conversões",
-      "Não sabe a diferença entre campanha de alcance e conversão",
+      "Medo de atrair paciente que só quer preço baixo",
     ],
     budget: { range: "R$5k a R$15k/mês", willingness: "Tem recurso mas está com pé atrás por experiência anterior" },
     authority: "Decide sozinha na clínica, mas quer validar com o marido que é financeiro",
@@ -51,7 +57,7 @@ const CLIENT_PROFILES = [
     objections: [
       "Já queimei dinheiro com marketing digital antes",
       "Minha recepcionista não dá conta de atender muitos leads",
-      "Tenho medo de atrair paciente que só quer preço baixo",
+      "Como eu vou saber que dessa vez vai ser diferente?",
     ],
   },
   {
@@ -61,12 +67,15 @@ const CLIENT_PROFILES = [
     segment: "Educação online",
     revenue: "R$8M/ano",
     teamSize: "35 pessoas",
-    personality: "Técnico, conhece métricas e jargão de marketing. Testa o vendedor para ver se realmente entende do assunto. Se perceber superficialidade, perde o interesse rápido.",
+    personality: "Técnico, conhece métricas e jargão. Testa o vendedor para ver se realmente entende. Se perceber superficialidade, perde o interesse.",
+    trafficInvestment: "Entre R$ 3.000 e R$ 15.000",
+    trafficResult: "Sim, mas menos do que gostaria",
+    mainChallenge: "Dificuldade em contratar e reter um Time de Marketing qualificado",
     pains: [
       "CPL no Google Search acima de R$45 — meta é R$25",
       "Funil de remarketing inexistente, perde leads quentes",
       "Equipe interna júnior, sem expertise em mídia paga",
-      "Concorrentes como Hotmart e Udemy dominam os leilões",
+      "Concorrentes dominam os leilões",
     ],
     budget: { range: "R$20k a R$50k/mês em mídia", willingness: "Orçamento aprovado, mas precisa justificar alocação para o CEO" },
     authority: "Influencia fortemente mas o CEO assina contratos acima de R$10k/mês",
@@ -84,9 +93,12 @@ const CLIENT_PROFILES = [
     segment: "Imobiliária",
     revenue: "R$15M/ano",
     teamSize: "40 pessoas (20 corretores)",
-    personality: "Pragmática e orientada a resultado. Fala a língua de vendas. Se o vendedor não falar em números e conversão rápido, acha perda de tempo.",
+    personality: "Pragmática e orientada a resultado. Fala a língua de vendas. Se não falar em números rápido, acha perda de tempo.",
+    trafficInvestment: "Entre R$ 3.000 e R$ 15.000",
+    trafficResult: "Sim, mas menos do que gostaria",
+    mainChallenge: "Falta de previsibilidade",
     pains: [
-      "Leads do Meta Ads desqualificados — corretores reclamam diariamente",
+      "Leads do Meta Ads desqualificados — corretores reclamam",
       "Formulário genérico sem qualificação prévia",
       "Não segmenta campanhas por tipo de imóvel ou faixa de renda",
       "Taxa de conversão lead→visita abaixo de 3%",
@@ -107,12 +119,15 @@ const CLIENT_PROFILES = [
     segment: "Varejo pet / E-commerce",
     revenue: "R$5M/ano",
     teamSize: "22 pessoas",
-    personality: "Empreendedor entusiasmado mas disperso. Pula de assunto em assunto. Precisa que o vendedor mantenha o foco da conversa.",
+    personality: "Empreendedor entusiasmado mas disperso. Pula de assunto. Precisa que o vendedor mantenha o foco.",
+    trafficInvestment: "Até R$ 1.000",
+    trafficResult: "Não trouxe nenhum retorno",
+    mainChallenge: "Dependência de indicações para fechar novas vendas",
     pains: [
-      "E-commerce com ROAS abaixo de 2x no Meta Ads",
-      "Não usa catálogo dinâmico nem lookalike de compradores",
+      "E-commerce com ROAS ruim no Meta Ads",
+      "Não usa catálogo dinâmico nem lookalike",
       "Carrinho abandonado sem automação de recuperação",
-      "Google Shopping mal configurado, CPC altíssimo",
+      "Sente que está perdendo pra concorrente que aparece mais",
     ],
     budget: { range: "R$5k a R$12k/mês", willingness: "Quer investir mas tem medo de não ter retorno rápido" },
     authority: "Decide sozinho, é o dono",
@@ -120,7 +135,7 @@ const CLIENT_PROFILES = [
     objections: [
       "Marketplace já me dá venda, por que investir em site próprio?",
       "Meu ticket médio é R$120, será que fecha conta?",
-      "Já tentei Google Shopping e o custo comeu toda a margem",
+      "Já tentei e o custo comeu toda a margem",
     ],
   },
   {
@@ -130,7 +145,10 @@ const CLIENT_PROFILES = [
     segment: "SaaS B2B",
     revenue: "R$25M/ano",
     teamSize: "80 pessoas",
-    personality: "Estratégica, fala pouco e escuta muito. Responde de forma curta e espera que o vendedor conduza. Valoriza dados e cases concretos.",
+    personality: "Estratégica, fala pouco e escuta muito. Respostas curtas. Valoriza dados e cases concretos.",
+    trafficInvestment: "Acima de R$ 15.000",
+    trafficResult: "Sim, mas menos do que gostaria",
+    mainChallenge: "Dificuldade em contratar e reter um Time de Marketing qualificado",
     pains: [
       "Custo por trial no LinkedIn Ads acima de R$200",
       "Conversão trial→pago em apenas 8% (meta é 15%)",
@@ -154,6 +172,9 @@ const CLIENT_PROFILES = [
     revenue: "R$60M/ano",
     teamSize: "150 pessoas",
     personality: "Corporativo e político. Fala com cuidado, nunca se compromete na primeira conversa. Sempre menciona outras pessoas que precisam ser envolvidas.",
+    trafficInvestment: "Acima de R$ 15.000",
+    trafficResult: "Sim, mas menos do que gostaria",
+    mainChallenge: "Falta de previsibilidade",
     pains: [
       "Investe R$80k/mês em tráfego sem dashboard unificado",
       "Não mede atribuição — não sabe se a venda veio do Google ou do stand",
@@ -176,11 +197,14 @@ const CLIENT_PROFILES = [
     segment: "Alimentação / Delivery",
     revenue: "R$12M/ano",
     teamSize: "55 pessoas",
-    personality: "Apaixonada pelo negócio, emocional nas decisões. Fala muito sobre a história da empresa. Precisa sentir confiança no vendedor como pessoa antes de falar de negócio.",
+    personality: "Apaixonada pelo negócio, emocional. Fala muito sobre a história da empresa. Precisa sentir confiança no vendedor como pessoa antes de falar de negócio.",
+    trafficInvestment: "Até R$ 1.000",
+    trafficResult: "Não trouxe nenhum retorno",
+    mainChallenge: "Receio de investir mais em Tráfego, sem segurança de resultados",
     pains: [
       "Dependência total do iFood — paga 27% de comissão",
-      "Quer canal próprio mas não sabe estruturar tráfego para app/site",
-      "Tentou panfletagem digital (impulsionamento) sem estratégia",
+      "Quer canal próprio mas não sabe estruturar tráfego",
+      "Só fez impulsionamento sem estratégia",
       "Sem CRM nem automação para base de clientes existente",
     ],
     budget: { range: "R$8k a R$20k/mês", willingness: "Investiria se sentisse segurança, mas tem trauma de experiência ruim" },
@@ -199,11 +223,14 @@ const CLIENT_PROFILES = [
     segment: "Moda feminina",
     revenue: "R$35M/ano",
     teamSize: "70 pessoas",
-    personality: "Exigente e acelerada. Já trabalhou com várias agências e tem expectativa alta. Cobra resultados concretos desde a primeira conversa.",
+    personality: "Exigente e acelerada. Já trabalhou com várias agências e tem expectativa alta. Cobra resultados desde a primeira conversa.",
+    trafficInvestment: "Acima de R$ 15.000",
+    trafficResult: "Sim, mas menos do que gostaria",
+    mainChallenge: "Todas as opções acima",
     pains: [
-      "Escala travada em Meta Ads — CPA subindo 15% ao mês",
-      "Sem estratégia de criativos, usa as mesmas peças há 6 meses",
-      "Público lookalike saturado, frequência acima de 5",
+      "Escala travada em Meta Ads — CPA subindo todo mês",
+      "Sem estratégia de criativos, usa as mesmas peças há meses",
+      "Público lookalike saturado, frequência altíssima",
       "TikTok Ads não decolou, investiu R$20k sem aprender",
     ],
     budget: { range: "R$40k a R$100k/mês em mídia", willingness: "Verba disponível, problema é encontrar parceiro que entregue" },
@@ -222,12 +249,15 @@ const CLIENT_PROFILES = [
     segment: "Autopeças B2B",
     revenue: "R$100M/ano",
     teamSize: "200 pessoas",
-    personality: "Cético e old-school. Acredita em relacionamento presencial e acha marketing digital modismo. Precisa de evidência concreta do seu segmento para considerar.",
+    personality: "Cético e old-school. Acredita em relacionamento presencial. Precisa de evidência concreta do seu segmento para considerar.",
+    trafficInvestment: "Não investi nada",
+    trafficResult: "Não trouxe nenhum retorno",
+    mainChallenge: "Dependência de indicações para fechar novas vendas",
     pains: [
       "Marketing digital praticamente inexistente — 100% via representantes",
       "Site institucional sem geração de demanda",
       "Concorrentes menores ganhando mercado com Google Ads e SEO",
-      "Não tem nem Google Analytics configurado corretamente",
+      "Não tem nem Google Analytics configurado",
     ],
     budget: { range: "R$10k a R$25k/mês para começar", willingness: "Empresa tem recurso mas ele pessoalmente não acredita — precisa ser convencido" },
     authority: "Influencia o CEO mas precisa apresentar proposta formal ao board",
@@ -235,7 +265,7 @@ const CLIENT_PROFILES = [
     objections: [
       "Nosso negócio é relacional, não se vende autopeça por clique",
       "Nossos vendedores não vão aceitar leads de internet",
-      "Preciso ver cases do nosso segmento específico antes de investir",
+      "Preciso ver cases do nosso segmento antes de investir",
     ],
   },
 ];
@@ -257,9 +287,16 @@ Segmento: ${profile.segment}
 Faturamento: ${profile.revenue}
 Equipe: ${profile.teamSize}
 Personalidade: ${profile.personality}
-Dores (NÃO revele todas de uma vez — deixe o vendedor descobrir com perguntas):
+
+INFORMAÇÕES DO LEAD (isso é o que o SDR vê antes de ligar):
+Investimento em Tráfego Pago: ${profile.trafficInvestment}
+Resultado do investimento: ${profile.trafficResult}
+Principal desafio: ${profile.mainChallenge}
+
+INFORMAÇÕES QUE O SDR NÃO VÊ (só revele se o vendedor fizer boas perguntas):
+Dores reais (NÃO revele todas de uma vez — deixe o vendedor descobrir):
 ${profile.pains.map((p) => `- ${p}`).join("\n")}
-Budget: ${profile.budget.range} — ${profile.budget.willingness}
+Budget real: ${profile.budget.range} — ${profile.budget.willingness}
 Autoridade: ${profile.authority}
 Urgência: ${profile.urgency}
 Objeções (use naturalmente quando fizer sentido, não despeje todas):
@@ -267,7 +304,7 @@ ${profile.objections.map((o) => `- "${o}"`).join("\n")}
 `;
 }
 
-function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string, messages: any[]): { systemPrompt: string; profile: typeof CLIENT_PROFILES[0] } {
+function buildSystemPrompt(roleType: string, methodology: string, playbookContext: string, messages: any[]): string {
   const profile = getRandomProfile(messages);
   const profileBlock = buildProfileBlock(profile);
 
@@ -286,11 +323,13 @@ REGRAS OBRIGATÓRIAS:
 5. Siga a PERSONALIDADE do perfil rigorosamente. Ela define como você reage.
 
 REGRAS DE REVELAÇÃO DE INFORMAÇÃO:
-- NUNCA ofereça informações que o vendedor não perguntou.
-- Sobre budget: só revele se o vendedor perguntar diretamente E já tiver demonstrado valor.
+- O SDR já tem acesso às "Informações do Lead" (investimento, resultado, desafio). Essas informações são públicas e o prospect sabe que preencheu um formulário.
+- As "Informações que o SDR não vê" (dores detalhadas, budget real, autoridade, urgência) SÓ devem ser reveladas se o vendedor fizer boas perguntas.
+- Sobre budget real: só revele se o vendedor perguntar diretamente E já tiver demonstrado valor.
 - Sobre quem decide: só revele se perguntado. Se não perguntado, não mencione.
-- Sobre urgência/timeline: dê pistas vagas primeiro ("tá rolando umas coisas aqui"). Só detalhe se o vendedor insistir com boas perguntas.
+- Sobre urgência/timeline: dê pistas vagas primeiro. Só detalhe se o vendedor insistir com boas perguntas.
 - Sobre dores: comece com a dor mais superficial. Só aprofunde se o vendedor fizer follow-up inteligente.
+- Se o vendedor mencionar algo do formulário (ex: "vi que você investe entre R$1k e R$3k"), reaja naturalmente como quem lembra que preencheu o form.
 
 REGRAS DE DESAFIO:
 - Se o vendedor fizer um pitch genérico sem entender seu contexto, CORTE: "Tá, mas isso é pra todo mundo ou é específico pro meu caso?"
@@ -301,17 +340,18 @@ REGRAS DE DESAFIO:
 
   const sdrObjective = `
 CONTEXTO DA SIMULAÇÃO (SDR — Pré-vendas):
-- Você RECEBEU uma ligação/mensagem do SDR. Você preencheu um formulário ou foi indicado, mas não lembra bem.
+- Você RECEBEU uma ligação/mensagem do SDR. Você preencheu um formulário online (Respondi.app) sobre marketing/tráfego pago.
+- Você LEMBRA vagamente que preencheu algo, mas não necessariamente lembra os detalhes.
 - O SDR precisa qualificá-lo e convencê-lo a agendar uma reunião com o especialista.
 - NÃO aceite a reunião fácil. Exija que o SDR demonstre que entende seu problema.
 - Se o SDR for bom: aceite agendar após 5-8 trocas no mínimo.
 - Se o SDR for fraco: recuse educadamente e encerre.
-- Comece a conversa sem saber quem está ligando. Seja levemente desconfiado.
+- Comece a conversa sem saber exatamente quem está ligando. Seja levemente desconfiado — recebe muita ligação de vendedor.
 `;
 
   const closerObjective = `
 CONTEXTO DA SIMULAÇÃO (Closer — Vendas):
-- Você está numa REUNIÃO agendada pelo SDR. Já sabe que é uma agência de marketing digital.
+- Você está numa REUNIÃO agendada pelo SDR. Já sabe que é a Allma, agência de marketing digital.
 - Você tem interesse mas NÃO vai fechar fácil.
 - Faça objeções reais e específicas do seu perfil.
 - Se o closer conduzir bem, mostre abertura gradual.
@@ -325,28 +365,28 @@ ${sdrObjective}
 O vendedor deveria estar tentando qualificar você nesses 4 eixos. Sua função é tornar essa qualificação um DESAFIO realista:
 - BUDGET: Não fale de dinheiro primeiro. Se perguntado, seja vago: "Depende do que vocês entregam." Só dê números depois de ver valor.
 - AUTHORITY: Não diga quem decide a menos que perguntado. Se for o caso, mencione que "precisa ver com mais gente" sem detalhar.
-- NEED: Comece com a dor superficial. Aprofunde só se o vendedor fizer boas perguntas de follow-up.
-- TIMELINE: Dê sinais vagos ("tá rolando umas coisas aqui"). Detalhes só com insistência qualificada.
+- NEED: Comece com a dor superficial (o que já disse no formulário). Aprofunde só se o vendedor fizer boas perguntas de follow-up.
+- TIMELINE: Dê sinais vagos ("tô pensando em umas mudanças aqui"). Detalhes só com insistência qualificada.
 `,
 
     spin: `
 METODOLOGIA: SPIN Selling (Situação, Problema, Implicação, Necessidade de Solução)
 ${closerObjective}
 O vendedor deveria estar conduzindo a conversa pelos estágios SPIN. Sua função é ser um cliente realista:
-- SITUAÇÃO: Responda perguntas sobre sua situação atual normalmente, mas não faça monólogos. Respostas curtas.
+- SITUAÇÃO: Responda perguntas sobre sua situação atual normalmente, mas respostas curtas.
 - PROBLEMA: Confirme problemas mas minimize no início: "É, tem isso, mas tamo levando." Só aprofunde se o vendedor insistir.
-- IMPLICAÇÃO: Quando o vendedor explorar impactos, reconheça com preocupação: "É, pensando assim... realmente tá me custando mais do que eu achava."
-- NECESSIDADE: Se o vendedor construir bem o caminho, demonstre abertura genuína para a solução. Se pular direto pra solução, questione: "Mas como você sabe que isso resolve se você nem entendeu meu problema direito?"
+- IMPLICAÇÃO: Quando o vendedor explorar impactos, reconheça: "É, pensando assim... realmente tá me custando mais do que eu achava."
+- NECESSIDADE: Se o vendedor construir bem o caminho, demonstre abertura. Se pular direto pra solução, questione: "Mas como você sabe que isso resolve se nem entendeu meu problema direito?"
 `,
 
     gpct: `
 METODOLOGIA: GPCT (Goals, Plans, Challenges, Timeline)
 ${closerObjective}
 O vendedor deveria estar explorando seus Goals, Plans, Challenges e Timeline. Sua função é ser um cliente realista:
-- GOALS: Tenha metas claras mas não as entregue de bandeja. Diga algo vago primeiro: "Quero crescer, né." Detalhes só com perguntas específicas.
-- PLANS: Se perguntado sobre planos, mostre que já está fazendo algo (mesmo que ineficiente). Não quer parecer que está parado.
+- GOALS: Tenha metas claras mas não entregue de bandeja. Algo vago primeiro: "Quero crescer, né." Detalhes só com perguntas específicas.
+- PLANS: Se perguntado sobre planos, mostre que já está fazendo algo (mesmo que ineficiente).
 - CHALLENGES: Revele desafios progressivamente. Comece com um, aprofunde se o vendedor puxar.
-- TIMELINE: Dê a timeline real apenas quando sentir que o vendedor está genuinamente tentando ajudar, não apenas fechar.
+- TIMELINE: Dê a timeline real apenas quando sentir que o vendedor está genuinamente tentando ajudar.
 `,
   };
 
@@ -355,8 +395,7 @@ O vendedor deveria estar explorando seus Goals, Plans, Challenges e Timeline. Su
     ? `\nPLAYBOOKS DE REFERÊNCIA (use como contexto do que a Allma oferece, mas NÃO cite esses playbooks na conversa):\n\n${playbookContext}`
     : "";
 
-  const systemPrompt = globalRules + "\n" + profileBlock + "\n" + methodPrompt + pbSection;
-  return { systemPrompt, profile };
+  return globalRules + "\n" + profileBlock + "\n" + methodPrompt + pbSection;
 }
 
 serve(async (req) => {
@@ -396,7 +435,7 @@ serve(async (req) => {
       }
     }
 
-    const { systemPrompt, profile } = buildSystemPrompt(role_type, methodology, playbookContext, messages);
+    const systemPrompt = buildSystemPrompt(role_type, methodology, playbookContext, messages);
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured");
@@ -441,12 +480,6 @@ serve(async (req) => {
 
     (async () => {
       try {
-        // Send profile metadata as first SSE event
-        const metaEvent = {
-          meta: { prospect_name: profile.name, prospect_company: profile.company },
-        };
-        await writer.write(encoder.encode(`data: ${JSON.stringify(metaEvent)}\n\n`));
-
         const reader = response.body!.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
