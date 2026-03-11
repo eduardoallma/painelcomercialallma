@@ -1,0 +1,1 @@
+ALTER TABLE public.roleplay_sessions ADD COLUMN duration_seconds integer DEFAULT NULL;

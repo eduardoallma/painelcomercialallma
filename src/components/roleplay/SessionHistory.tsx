@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, MessageSquare, Trash2, ChevronLeft, Star } from "lucide-react";
+import { Loader2, MessageSquare, Trash2, ChevronLeft, Star, Clock } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +25,7 @@ export interface HistorySession {
   bant_feedback: string | null;
   methodology: string | null;
   created_at: string;
+  duration_seconds?: number | null;
 }
 
 interface Props {
@@ -84,7 +85,15 @@ export default function SessionHistory({ sessions, loading, onDeleted, onEvaluat
           )}
         </div>
 
-        <p className="text-sm font-medium text-foreground">{selected.title}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium text-foreground">{selected.title}</p>
+          {selected.duration_seconds != null && (
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-mono">
+              <Clock className="h-3 w-3" />
+              {Math.floor(selected.duration_seconds / 60)}:{(selected.duration_seconds % 60).toString().padStart(2, "0")}
+            </span>
+          )}
+        </div>
 
         {showEvaluation && evalResult && (
           <MethodologyEvaluation
@@ -146,10 +155,17 @@ export default function SessionHistory({ sessions, loading, onDeleted, onEvaluat
         >
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
               {new Date(s.created_at).toLocaleDateString("pt-BR")}
               {" · "}
               {(s.messages?.length ?? 0)} mensagens
+              {s.duration_seconds != null && (
+                <>
+                  {" · "}
+                  <Clock className="h-3 w-3 inline" />
+                  {Math.floor(s.duration_seconds / 60)}:{(s.duration_seconds % 60).toString().padStart(2, "0")}
+                </>
+              )}
             </p>
           </div>
 

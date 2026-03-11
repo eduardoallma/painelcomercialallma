@@ -109,6 +109,7 @@ export type Database = {
         Row: {
           bant_feedback: string | null
           created_at: string
+          duration_seconds: number | null
           id: string
           messages: Json
           methodology: string | null
@@ -121,6 +122,7 @@ export type Database = {
         Insert: {
           bant_feedback?: string | null
           created_at?: string
+          duration_seconds?: number | null
           id?: string
           messages?: Json
           methodology?: string | null
@@ -133,6 +135,7 @@ export type Database = {
         Update: {
           bant_feedback?: string | null
           created_at?: string
+          duration_seconds?: number | null
           id?: string
           messages?: Json
           methodology?: string | null

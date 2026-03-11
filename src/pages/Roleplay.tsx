@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2, Target, TrendingUp, AlertCircle } from "lucide-react";
+import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2, Target, TrendingUp, AlertCircle, Clock, Briefcase } from "lucide-react";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import ReactMarkdown from "react-markdown";
 import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
@@ -43,6 +43,13 @@ interface ProspectInfo {
   trafficInvestment: string;
   trafficResult: string;
   mainChallenge: string;
+  position?: string;
+}
+
+function formatTimer(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 export default function Roleplay() {
@@ -59,6 +66,11 @@ export default function Roleplay() {
   const [prospectInfo, setProspectInfo] = useState<ProspectInfo | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Timer
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // History
   const [historySessions, setHistorySessions] = useState<HistorySession[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
@@ -73,7 +85,7 @@ export default function Roleplay() {
     if (!user) return;
     supabase
       .from("roleplay_sessions")
-      .select("id, title, messages, score, bant_feedback, methodology, created_at")
+      .select("id, title, messages, score, bant_feedback, methodology, created_at, duration_seconds")
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
@@ -96,6 +108,18 @@ export default function Roleplay() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Timer interval
+  useEffect(() => {
+    if (sessionStartTime) {
+      timerRef.current = setInterval(() => {
+        setElapsedSeconds(Math.floor((Date.now() - sessionStartTime) / 1000));
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [sessionStartTime]);
 
   const togglePlaybook = (id: string) => {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -129,11 +153,12 @@ export default function Roleplay() {
     if (!user || msgs.length < 2) return null;
 
     const title = buildTitle();
+    const duration = sessionStartTime ? Math.floor((Date.now() - sessionStartTime) / 1000) : null;
 
     if (sessionId) {
       await supabase
         .from("roleplay_sessions")
-        .update({ messages: JSON.parse(JSON.stringify(msgs)), title })
+        .update({ messages: JSON.parse(JSON.stringify(msgs)), title, duration_seconds: duration })
         .eq("id", sessionId);
       return sessionId;
     }
@@ -148,6 +173,7 @@ export default function Roleplay() {
           playbook_ids: selectedIds,
           role_type: roleType,
           methodology: methodology,
+          duration_seconds: duration,
         },
       ])
       .select("id")
@@ -254,6 +280,9 @@ export default function Roleplay() {
     setMethodology(null);
     setSelectionStep("role");
     setProspectInfo(null);
+    setSessionStartTime(null);
+    setElapsedSeconds(0);
+    if (timerRef.current) clearInterval(timerRef.current);
   };
 
   const send = async () => {
@@ -265,6 +294,11 @@ export default function Roleplay() {
     setMessages(allMessages);
     setInput("");
     setIsLoading(true);
+
+    // Start timer on first message
+    if (!sessionStartTime) {
+      setSessionStartTime(Date.now());
+    }
 
     let assistantSoFar = "";
 
@@ -335,6 +369,7 @@ export default function Roleplay() {
                 trafficInvestment: parsed.meta.trafficInvestment,
                 trafficResult: parsed.meta.trafficResult,
                 mainChallenge: parsed.meta.mainChallenge,
+                position: parsed.meta.position,
               });
               continue;
             }
@@ -484,6 +519,13 @@ export default function Roleplay() {
             {roleType === "sdr" ? "SDR" : "Closer"} · {methodologyLabel}
           </span>
 
+          {sessionStartTime && (
+            <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border border-border text-muted-foreground font-mono">
+              <Clock className="h-3 w-3" />
+              {formatTimer(elapsedSeconds)}
+            </span>
+          )}
+
           {playbooks.length > 0 && (
             <>
               <BookOpen className="h-4 w-4 text-muted-foreground ml-2" />
@@ -544,6 +586,12 @@ export default function Roleplay() {
                     <p className="text-xs text-yellow-500">{prospectInfo.role}</p>
                   </div>
                 </div>
+                {prospectInfo.position && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Briefcase className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                    <span className="text-muted-foreground">Cargo: {prospectInfo.position}</span>
+                  </div>
+                )}
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-1.5">
                     <Building2 className="h-3 w-3 text-yellow-500 flex-shrink-0" />
