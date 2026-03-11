@@ -280,6 +280,9 @@ export default function Roleplay() {
     setMethodology(null);
     setSelectionStep("role");
     setProspectInfo(null);
+    setSessionStartTime(null);
+    setElapsedSeconds(0);
+    if (timerRef.current) clearInterval(timerRef.current);
   };
 
   const send = async () => {
