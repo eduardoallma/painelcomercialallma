@@ -32,6 +32,8 @@ interface Props {
   sessions: HistorySession[];
   loading: boolean;
   onDeleted: (id: string) => void;
+  onEvaluate?: (session: HistorySession) => void;
+  evaluatingId?: string | null;
 }
 
 export default function SessionHistory({ sessions, loading, onDeleted }: Props) {
