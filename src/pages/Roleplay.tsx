@@ -85,7 +85,7 @@ export default function Roleplay() {
     if (!user) return;
     supabase
       .from("roleplay_sessions")
-      .select("id, title, messages, score, bant_feedback, methodology, created_at")
+      .select("id, title, messages, score, bant_feedback, methodology, created_at, duration_seconds")
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
