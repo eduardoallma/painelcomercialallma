@@ -25,6 +25,7 @@ export interface HistorySession {
   bant_feedback: string | null;
   methodology: string | null;
   created_at: string;
+  duration_seconds?: number | null;
 }
 
 interface Props {
