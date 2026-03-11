@@ -614,6 +614,8 @@ export default function Roleplay() {
             sessions={historySessions}
             loading={historyLoading}
             onDeleted={(id) => setHistorySessions((prev) => prev.filter((s) => s.id !== id))}
+            onEvaluate={evaluateHistorySession}
+            evaluatingId={evaluatingHistoryId}
           />
         </div>
       </div>

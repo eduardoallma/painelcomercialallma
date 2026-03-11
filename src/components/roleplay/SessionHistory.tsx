@@ -35,7 +35,7 @@ interface Props {
   evaluatingId?: string | null;
 }
 
-export default function SessionHistory({ sessions, loading, onDeleted }: Props) {
+export default function SessionHistory({ sessions, loading, onDeleted, onEvaluate, evaluatingId }: Props) {
   const [selected, setSelected] = useState<HistorySession | null>(null);
   const [showEvaluation, setShowEvaluation] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -61,11 +61,28 @@ export default function SessionHistory({ sessions, loading, onDeleted }: Props) 
 
   if (selected) {
     return (
-      <div className="flex flex-col gap-3">
-        <Button variant="ghost" size="sm" onClick={() => setSelected(null)} className="self-start">
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Voltar ao histórico
-        </Button>
+      <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto">
+        <div className="sticky top-0 z-10 bg-background pb-2 flex items-center justify-between">
+          <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Voltar ao histórico
+          </Button>
+          {selected.score === null && onEvaluate && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEvaluate(selected)}
+              disabled={evaluatingId === selected.id}
+            >
+              {evaluatingId === selected.id ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-1" />
+              ) : (
+                <Star className="h-4 w-4 mr-1" />
+              )}
+              Avaliar
+            </Button>
+          )}
+        </div>
 
         <p className="text-sm font-medium text-foreground">{selected.title}</p>
 
@@ -143,6 +160,22 @@ export default function SessionHistory({ sessions, loading, onDeleted }: Props) 
               }`}>
                 {s.score}/10
               </span>
+            )}
+
+            {s.score === null && onEvaluate && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={(e) => { e.stopPropagation(); onEvaluate(s); }}
+                disabled={evaluatingId === s.id}
+              >
+                {evaluatingId === s.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Star className="h-4 w-4" />
+                )}
+              </Button>
             )}
 
             <AlertDialog>
