@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, MessageSquare, Trash2, ChevronLeft, Star } from "lucide-react";
+import { Loader2, MessageSquare, Trash2, ChevronLeft, Star, Clock } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
