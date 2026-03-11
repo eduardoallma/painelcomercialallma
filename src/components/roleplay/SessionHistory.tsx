@@ -85,7 +85,15 @@ export default function SessionHistory({ sessions, loading, onDeleted, onEvaluat
           )}
         </div>
 
-        <p className="text-sm font-medium text-foreground">{selected.title}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium text-foreground">{selected.title}</p>
+          {selected.duration_seconds != null && (
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-mono">
+              <Clock className="h-3 w-3" />
+              {Math.floor(selected.duration_seconds / 60)}:{(selected.duration_seconds % 60).toString().padStart(2, "0")}
+            </span>
+          )}
+        </div>
 
         {showEvaluation && evalResult && (
           <MethodologyEvaluation

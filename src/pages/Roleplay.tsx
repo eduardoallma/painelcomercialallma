@@ -592,7 +592,6 @@ export default function Roleplay() {
                     <span className="text-muted-foreground">Cargo: {prospectInfo.position}</span>
                   </div>
                 )}
-                </div>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-1.5">
                     <Building2 className="h-3 w-3 text-yellow-500 flex-shrink-0" />

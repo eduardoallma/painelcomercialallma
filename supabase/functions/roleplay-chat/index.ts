@@ -510,6 +510,7 @@ serve(async (req) => {
             trafficInvestment: profile.trafficInvestment,
             trafficResult: profile.trafficResult,
             mainChallenge: profile.mainChallenge,
+            position: position,
           },
         };
         await writer.write(encoder.encode(`data: ${JSON.stringify(metaEvent)}\n\n`));
