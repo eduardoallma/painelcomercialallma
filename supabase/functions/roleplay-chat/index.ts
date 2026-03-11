@@ -270,6 +270,9 @@ const CLIENT_PROFILES = [
   },
 ];
 
+const POSITIONS_DECISION_MAKER = ["Único Proprietário", "Um dos Sócios", "Gerente"];
+const POSITION_COLLABORATOR = "Colaborador";
+
 function getRandomProfile(messages: any[]): typeof CLIENT_PROFILES[0] {
   const firstUserMsg = messages.find((m: any) => m.role === "user")?.content || "";
   let hash = 0;
@@ -278,6 +281,18 @@ function getRandomProfile(messages: any[]): typeof CLIENT_PROFILES[0] {
   }
   const idx = Math.abs(hash) % CLIENT_PROFILES.length;
   return CLIENT_PROFILES[idx];
+}
+
+function getRandomPosition(messages: any[]): string {
+  const firstUserMsg = messages.find((m: any) => m.role === "user")?.content || "";
+  let hash = 0;
+  for (let i = 0; i < firstUserMsg.length; i++) {
+    hash = ((hash << 7) - hash + firstUserMsg.charCodeAt(i)) | 0;
+  }
+  const absHash = Math.abs(hash);
+  // 90% decision maker, 10% collaborator
+  if (absHash % 10 === 0) return POSITION_COLLABORATOR;
+  return POSITIONS_DECISION_MAKER[absHash % POSITIONS_DECISION_MAKER.length];
 }
 
 function buildProfileBlock(profile: typeof CLIENT_PROFILES[0]): string {
