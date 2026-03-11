@@ -66,6 +66,11 @@ export default function Roleplay() {
   const [prospectInfo, setProspectInfo] = useState<ProspectInfo | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Timer
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // History
   const [historySessions, setHistorySessions] = useState<HistorySession[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
