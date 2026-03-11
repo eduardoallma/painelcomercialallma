@@ -147,10 +147,17 @@ export default function SessionHistory({ sessions, loading, onDeleted, onEvaluat
         >
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
               {new Date(s.created_at).toLocaleDateString("pt-BR")}
               {" · "}
               {(s.messages?.length ?? 0)} mensagens
+              {s.duration_seconds != null && (
+                <>
+                  {" · "}
+                  <Clock className="h-3 w-3 inline" />
+                  {Math.floor(s.duration_seconds / 60)}:{(s.duration_seconds % 60).toString().padStart(2, "0")}
+                </>
+              )}
             </p>
           </div>
 
