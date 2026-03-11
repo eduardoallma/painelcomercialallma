@@ -369,6 +369,7 @@ export default function Roleplay() {
                 trafficInvestment: parsed.meta.trafficInvestment,
                 trafficResult: parsed.meta.trafficResult,
                 mainChallenge: parsed.meta.mainChallenge,
+                position: parsed.meta.position,
               });
               continue;
             }
