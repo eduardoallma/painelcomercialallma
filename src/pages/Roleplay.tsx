@@ -519,6 +519,13 @@ export default function Roleplay() {
             {roleType === "sdr" ? "SDR" : "Closer"} · {methodologyLabel}
           </span>
 
+          {sessionStartTime && (
+            <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border border-border text-muted-foreground font-mono">
+              <Clock className="h-3 w-3" />
+              {formatTimer(elapsedSeconds)}
+            </span>
+          )}
+
           {playbooks.length > 0 && (
             <>
               <BookOpen className="h-4 w-4 text-muted-foreground ml-2" />
