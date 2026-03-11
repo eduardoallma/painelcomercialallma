@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2, Target, TrendingUp, AlertCircle } from "lucide-react";
+import { Send, Trash2, Loader2, BookOpen, Star, Plus, ArrowLeft, User, Building2, Target, TrendingUp, AlertCircle, Clock, Briefcase } from "lucide-react";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import ReactMarkdown from "react-markdown";
 import MethodologyEvaluation from "@/components/roleplay/MethodologyEvaluation";
