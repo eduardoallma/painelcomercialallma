@@ -62,6 +62,7 @@ export default function Roleplay() {
   // History
   const [historySessions, setHistorySessions] = useState<HistorySession[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
+  const [evaluatingHistoryId, setEvaluatingHistoryId] = useState<string | null>(null);
 
   // Role/methodology selection
   const [roleType, setRoleType] = useState<RoleType | null>(null);
