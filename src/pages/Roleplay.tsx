@@ -213,6 +213,38 @@ export default function Roleplay() {
     }
   };
 
+  const evaluateHistorySession = async (session: HistorySession) => {
+    if (!user) return;
+    setEvaluatingHistoryId(session.id);
+    try {
+      const { data: { session: authSession } } = await supabase.auth.getSession();
+      if (!authSession?.access_token) throw new Error("Sessão expirada");
+
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/evaluate-roleplay`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authSession.access_token}`,
+        },
+        body: JSON.stringify({ session_id: session.id }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: "Erro desconhecido" }));
+        throw new Error(err.error || `HTTP ${resp.status}`);
+      }
+
+      const result = await resp.json();
+      toast({ title: `Avaliação concluída: ${result.score}/10` });
+      loadHistory();
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Erro na avaliação", description: e.message, variant: "destructive" });
+    } finally {
+      setEvaluatingHistoryId(null);
+    }
+  };
+
   const startNewSession = () => {
     setMessages([]);
     setSessionId(null);
