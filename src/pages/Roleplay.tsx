@@ -295,6 +295,11 @@ export default function Roleplay() {
     setInput("");
     setIsLoading(true);
 
+    // Start timer on first message
+    if (!sessionStartTime) {
+      setSessionStartTime(Date.now());
+    }
+
     let assistantSoFar = "";
 
     try {
