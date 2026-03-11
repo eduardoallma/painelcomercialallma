@@ -153,11 +153,12 @@ export default function Roleplay() {
     if (!user || msgs.length < 2) return null;
 
     const title = buildTitle();
+    const duration = sessionStartTime ? Math.floor((Date.now() - sessionStartTime) / 1000) : null;
 
     if (sessionId) {
       await supabase
         .from("roleplay_sessions")
-        .update({ messages: JSON.parse(JSON.stringify(msgs)), title })
+        .update({ messages: JSON.parse(JSON.stringify(msgs)), title, duration_seconds: duration })
         .eq("id", sessionId);
       return sessionId;
     }
@@ -172,6 +173,7 @@ export default function Roleplay() {
           playbook_ids: selectedIds,
           role_type: roleType,
           methodology: methodology,
+          duration_seconds: duration,
         },
       ])
       .select("id")
