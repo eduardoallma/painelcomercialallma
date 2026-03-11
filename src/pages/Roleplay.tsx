@@ -586,6 +586,13 @@ export default function Roleplay() {
                     <p className="text-xs text-yellow-500">{prospectInfo.role}</p>
                   </div>
                 </div>
+                {prospectInfo.position && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Briefcase className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                    <span className="text-muted-foreground">Cargo: {prospectInfo.position}</span>
+                  </div>
+                )}
+                </div>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-1.5">
                     <Building2 className="h-3 w-3 text-yellow-500 flex-shrink-0" />
