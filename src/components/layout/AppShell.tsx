@@ -6,7 +6,7 @@ export default function AppShell() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       {/* Desktop sidebar */}
       <div className="hidden lg:block w-60 flex-shrink-0">
         <SidebarNav />
