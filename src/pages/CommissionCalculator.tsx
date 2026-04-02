@@ -251,8 +251,11 @@ function SDRCloserSimple() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-foreground">MRR Adicionado (R$)</label>
-              <Input type="number" min={0} placeholder="0" value={sdrMrr} onChange={(e) => setSdrMrr(e.target.value)} className="max-w-[220px]" />
+              <label className="text-sm font-medium text-foreground">MRR Adicionado</label>
+              <div className="flex items-center gap-2 max-w-[220px]">
+                <span className="text-sm font-medium text-muted-foreground">R$</span>
+                <Input type="number" min={0} placeholder="0" value={sdrMrr} onChange={(e) => setSdrMrr(e.target.value)} />
+              </div>
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Comissão</span>
@@ -267,8 +270,11 @@ function SDRCloserSimple() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-foreground">MRR Adicionado (R$)</label>
-              <Input type="number" min={0} placeholder="0" value={closerMrr} onChange={(e) => setCloserMrr(e.target.value)} className="max-w-[220px]" />
+              <label className="text-sm font-medium text-foreground">MRR Adicionado</label>
+              <div className="flex items-center gap-2 max-w-[220px]">
+                <span className="text-sm font-medium text-muted-foreground">R$</span>
+                <Input type="number" min={0} placeholder="0" value={closerMrr} onChange={(e) => setCloserMrr(e.target.value)} />
+              </div>
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Comissão</span>
@@ -393,30 +399,6 @@ export default function CommissionCalculator() {
             <CloserCalculator />
           </TabsContent>
         </Tabs>
-
-        {isAdmin && (
-          <Card className="border-dashed opacity-80">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Tabela de Multiplicadores</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-5 gap-2 text-center text-xs">
-                {[
-                  { range: "0–70%", mult: "×0", color: "text-destructive" },
-                  { range: "71–85%", mult: "×0,5", color: "text-orange-500" },
-                  { range: "86–99%", mult: "×0,7", color: "text-yellow-500" },
-                  { range: "100–119%", mult: "×1", color: "text-primary" },
-                  { range: "120%+", mult: "×2", color: "text-emerald-500" },
-                ].map((f) => (
-                  <div key={f.range} className="p-2 rounded bg-muted/50">
-                    <p className="text-muted-foreground">{f.range}</p>
-                    <p className={`font-bold ${f.color}`}>{f.mult}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </>
   );
