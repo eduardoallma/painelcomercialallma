@@ -229,17 +229,37 @@ function CloserCalculator() {
   );
 }
 
+/* ─── Currency mask helpers ─── */
+
+function parseCurrencyInput(raw: string): number {
+  // Remove tudo exceto dígitos
+  const digits = raw.replace(/\D/g, "");
+  return parseInt(digits, 10) || 0;
+}
+
+function formatCurrencyInput(cents: number): string {
+  if (cents === 0) return "";
+  return (cents / 100).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 /* ─── SDR & Closer (Simple) ─── */
 
 function SDRCloserSimple() {
-  const [sdrMrr, setSdrMrr] = useState("");
-  const [closerMrr, setCloserMrr] = useState("");
+  const [sdrCents, setSdrCents] = useState(0);
+  const [closerCents, setCloserCents] = useState(0);
 
-  const sdrMrrNum = parseFloat(sdrMrr) || 0;
-  const closerMrrNum = parseFloat(closerMrr) || 0;
+  const sdrMrrNum = sdrCents / 100;
+  const closerMrrNum = closerCents / 100;
 
   const sdrCommission = sdrMrrNum * 0.10;
   const closerCommission = closerMrrNum * 0.25;
+
+  const handleChange = (setter: (v: number) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setter(parseCurrencyInput(e.target.value));
+  };
 
   return (
     <div className="space-y-6">
@@ -252,10 +272,14 @@ function SDRCloserSimple() {
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <label className="text-sm font-medium text-foreground">MRR Adicionado</label>
-              <div className="flex items-center gap-2 max-w-[220px]">
-                <span className="text-sm font-medium text-muted-foreground">R$</span>
-                <Input type="number" min={0} placeholder="0" value={sdrMrr} onChange={(e) => setSdrMrr(e.target.value)} />
-              </div>
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="R$ 0,00"
+                value={sdrCents ? `R$ ${formatCurrencyInput(sdrCents)}` : ""}
+                onChange={handleChange(setSdrCents)}
+                className="max-w-[220px]"
+              />
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Comissão</span>
@@ -271,10 +295,14 @@ function SDRCloserSimple() {
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <label className="text-sm font-medium text-foreground">MRR Adicionado</label>
-              <div className="flex items-center gap-2 max-w-[220px]">
-                <span className="text-sm font-medium text-muted-foreground">R$</span>
-                <Input type="number" min={0} placeholder="0" value={closerMrr} onChange={(e) => setCloserMrr(e.target.value)} />
-              </div>
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="R$ 0,00"
+                value={closerCents ? `R$ ${formatCurrencyInput(closerCents)}` : ""}
+                onChange={handleChange(setCloserCents)}
+                className="max-w-[220px]"
+              />
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Comissão</span>
