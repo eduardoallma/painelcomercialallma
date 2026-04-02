@@ -229,6 +229,58 @@ function CloserCalculator() {
   );
 }
 
+/* ─── SDR & Closer (Simple) ─── */
+
+function SDRCloserSimple() {
+  const [sdrMrr, setSdrMrr] = useState("");
+  const [closerMrr, setCloserMrr] = useState("");
+
+  const sdrMrrNum = parseFloat(sdrMrr) || 0;
+  const closerMrrNum = parseFloat(closerMrr) || 0;
+
+  const sdrCommission = sdrMrrNum * 0.10;
+  const closerCommission = closerMrrNum * 0.25;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">SDR — 10% do MRR</CardTitle>
+            <p className="text-xs text-muted-foreground">Comissão de 10% sobre o MRR adicionado</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-foreground">MRR Adicionado (R$)</label>
+              <Input type="number" min={0} placeholder="0" value={sdrMrr} onChange={(e) => setSdrMrr(e.target.value)} className="max-w-[220px]" />
+            </div>
+            <div className="border-t border-border pt-3 flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Comissão</span>
+              <span className="font-display text-2xl font-bold text-primary">{fmtCurrency(sdrCommission)}</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Closer — 25% do MRR</CardTitle>
+            <p className="text-xs text-muted-foreground">Comissão de 25% sobre o MRR adicionado</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-foreground">MRR Adicionado (R$)</label>
+              <Input type="number" min={0} placeholder="0" value={closerMrr} onChange={(e) => setCloserMrr(e.target.value)} className="max-w-[220px]" />
+            </div>
+            <div className="border-t border-border pt-3 flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Comissão</span>
+              <span className="font-display text-2xl font-bold text-primary">{fmtCurrency(closerCommission)}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Shared components ─── */
 
 function CriterionCard({ title, achieved, target, unit, pct, mult, base, commission, isCurrency }: {
