@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthProvider";
 import Topbar from "@/components/layout/Topbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
