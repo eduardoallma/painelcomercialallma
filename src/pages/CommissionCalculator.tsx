@@ -382,11 +382,11 @@ export default function CommissionCalculator() {
         <Tabs defaultValue="sdr-closer">
           <TabsList className="w-full max-w-md">
             <TabsTrigger value="sdr-closer" className="flex-1">SDR & Closer</TabsTrigger>
-            <TabsTrigger value="sdr" className="flex-1" disabled={!isAdmin}>
-              SDR {!isAdmin && "🔒"}
+            <TabsTrigger value="sdr" className="flex-1 opacity-50 pointer-events-none" disabled>
+              SDR 🔒
             </TabsTrigger>
-            <TabsTrigger value="closer" className="flex-1" disabled={!isAdmin}>
-              Closer {!isAdmin && "🔒"}
+            <TabsTrigger value="closer" className="flex-1 opacity-50 pointer-events-none" disabled>
+              Closer 🔒
             </TabsTrigger>
           </TabsList>
           <TabsContent value="sdr-closer" className="mt-6">
