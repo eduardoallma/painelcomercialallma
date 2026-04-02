@@ -399,30 +399,6 @@ export default function CommissionCalculator() {
             <CloserCalculator />
           </TabsContent>
         </Tabs>
-
-        {isAdmin && (
-          <Card className="border-dashed opacity-80">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Tabela de Multiplicadores</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-5 gap-2 text-center text-xs">
-                {[
-                  { range: "0–70%", mult: "×0", color: "text-destructive" },
-                  { range: "71–85%", mult: "×0,5", color: "text-orange-500" },
-                  { range: "86–99%", mult: "×0,7", color: "text-yellow-500" },
-                  { range: "100–119%", mult: "×1", color: "text-primary" },
-                  { range: "120%+", mult: "×2", color: "text-emerald-500" },
-                ].map((f) => (
-                  <div key={f.range} className="p-2 rounded bg-muted/50">
-                    <p className="text-muted-foreground">{f.range}</p>
-                    <p className={`font-bold ${f.color}`}>{f.mult}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </>
   );
