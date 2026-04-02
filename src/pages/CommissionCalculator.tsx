@@ -361,20 +361,31 @@ function TotalCard({ fixed, variable, total, oteMax }: { fixed: number; variable
   );
 }
 
-/* ─── Page ─── */
+const ADMIN_EMAIL = "eduardo@allmamarketing.com.br";
 
 export default function CommissionCalculator() {
   const { onMenuClick } = useOutletContext<{ onMenuClick: () => void }>();
+  const { user } = useAuth();
+
+  const isAdmin = user?.email === ADMIN_EMAIL;
 
   return (
     <>
       <Topbar title="Calculadora de Comissão" description="Simule seus ganhos com base no modelo OTE" onMenuClick={onMenuClick} />
       <div className="p-6 lg:p-8 max-w-5xl space-y-6">
-        <Tabs defaultValue="sdr">
-          <TabsList className="w-full max-w-xs">
-            <TabsTrigger value="sdr" className="flex-1">SDR</TabsTrigger>
-            <TabsTrigger value="closer" className="flex-1">Closer</TabsTrigger>
+        <Tabs defaultValue="sdr-closer">
+          <TabsList className="w-full max-w-md">
+            <TabsTrigger value="sdr-closer" className="flex-1">SDR & Closer</TabsTrigger>
+            <TabsTrigger value="sdr" className="flex-1" disabled={!isAdmin}>
+              SDR {!isAdmin && "🔒"}
+            </TabsTrigger>
+            <TabsTrigger value="closer" className="flex-1" disabled={!isAdmin}>
+              Closer {!isAdmin && "🔒"}
+            </TabsTrigger>
           </TabsList>
+          <TabsContent value="sdr-closer" className="mt-6">
+            <SDRCloserSimple />
+          </TabsContent>
           <TabsContent value="sdr" className="mt-6">
             <SDRCalculator />
           </TabsContent>
@@ -383,28 +394,29 @@ export default function CommissionCalculator() {
           </TabsContent>
         </Tabs>
 
-        {/* Multiplier reference */}
-        <Card className="border-dashed opacity-80">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Tabela de Multiplicadores</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-5 gap-2 text-center text-xs">
-              {[
-                { range: "0–70%", mult: "×0", color: "text-destructive" },
-                { range: "71–85%", mult: "×0,5", color: "text-orange-500" },
-                { range: "86–99%", mult: "×0,7", color: "text-yellow-500" },
-                { range: "100–119%", mult: "×1", color: "text-primary" },
-                { range: "120%+", mult: "×2", color: "text-emerald-500" },
-              ].map((f) => (
-                <div key={f.range} className="p-2 rounded bg-muted/50">
-                  <p className="text-muted-foreground">{f.range}</p>
-                  <p className={`font-bold ${f.color}`}>{f.mult}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {isAdmin && (
+          <Card className="border-dashed opacity-80">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm">Tabela de Multiplicadores</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-5 gap-2 text-center text-xs">
+                {[
+                  { range: "0–70%", mult: "×0", color: "text-destructive" },
+                  { range: "71–85%", mult: "×0,5", color: "text-orange-500" },
+                  { range: "86–99%", mult: "×0,7", color: "text-yellow-500" },
+                  { range: "100–119%", mult: "×1", color: "text-primary" },
+                  { range: "120%+", mult: "×2", color: "text-emerald-500" },
+                ].map((f) => (
+                  <div key={f.range} className="p-2 rounded bg-muted/50">
+                    <p className="text-muted-foreground">{f.range}</p>
+                    <p className={`font-bold ${f.color}`}>{f.mult}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </>
   );
