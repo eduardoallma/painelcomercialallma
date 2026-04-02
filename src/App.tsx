@@ -8,6 +8,7 @@ import Calculator from "@/pages/Calculator";
 import CommissionCalculator from "@/pages/CommissionCalculator";
 import Playbooks from "@/pages/Playbooks";
 import Roleplay from "@/pages/Roleplay";
+import RoleplaySession from "@/pages/RoleplaySession";
 
 import NotFound from "@/pages/NotFound";
 
