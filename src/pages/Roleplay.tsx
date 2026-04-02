@@ -441,23 +441,7 @@ export default function Roleplay() {
                       </span>
                     </div>
                   </Card>
-                  <Card
-                    className="p-5 cursor-pointer hover:border-primary transition-colors border-2"
-                    onClick={() => handleRoleSelect("closer")}
-                  >
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-foreground">🤝 Vendas (Closer)</h3>
-                      <p className="text-sm text-muted-foreground">Fechamento de negócios com cliente já qualificado</p>
-                      <div className="flex gap-1.5 mt-1">
-                        <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                          SPIN
-                        </span>
-                        <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                          GPCT
-                        </span>
-                      </div>
-                    </div>
-                  </Card>
+                  {/* Closer option hidden — will be re-enabled in the future */}
                 </div>
               </>
             )}
