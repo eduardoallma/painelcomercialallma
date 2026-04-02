@@ -270,8 +270,11 @@ function SDRCloserSimple() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-foreground">MRR Adicionado (R$)</label>
-              <Input type="number" min={0} placeholder="0" value={closerMrr} onChange={(e) => setCloserMrr(e.target.value)} className="max-w-[220px]" />
+              <label className="text-sm font-medium text-foreground">MRR Adicionado</label>
+              <div className="flex items-center gap-2 max-w-[220px]">
+                <span className="text-sm font-medium text-muted-foreground">R$</span>
+                <Input type="number" min={0} placeholder="0" value={closerMrr} onChange={(e) => setCloserMrr(e.target.value)} />
+              </div>
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Comissão</span>
