@@ -30,7 +30,8 @@ const App = () => (
           
           <Route path="/playbooks" element={<Playbooks />} />
         </Route>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/roleplay" replace />} />
+        <Route path="/dashboard" element={<Navigate to="/roleplay" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
